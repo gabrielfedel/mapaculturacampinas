@@ -1,0 +1,21 @@
+#neatline-narrative {
+    //height: 80%;
+    height: 97%;
+    overflow-y: scroll;
+    position: absolute;
+    width: 22%;
+    padding-top: 1%;
+    padding-left: 1%;
+}
+ 
+#neatline {
+    height: 80%;
+    margin-left: 23%;
+    position: absolute;
+    //width: 41%;
+    width: 77%;
+}
+ 
+#neatline-map {
+        height: 100%;
+}
