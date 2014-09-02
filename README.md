@@ -1,4 +1,5 @@
-======= Mapa da Cultura de Campinas
+Mapa da Cultura de Campinas
+===========================
 
 Esse é o código atual do mapa da cultura de Campinas (http://cultcampinas.org/)
 
