@@ -34,6 +34,9 @@ class Table_Collection extends Omeka_Db_Table
                 case 'modified_since':
                     $this->filterBySince($select, $value, 'modified');
                     break;
+                case 'range':
+                    $this->filterByRange($select, $value);
+                    break;
             }
         }
     }
@@ -69,6 +72,7 @@ class Table_Collection extends Omeka_Db_Table
 
         $select->reset(Zend_Db_Select::COLUMNS);
         $select->from(array(), array('collections.id', 'element_texts.text'));
+        $select->order('element_texts.text');
         
         $pairs = $db->fetchPairs($select);
         foreach ($pairs as $collectionId => &$name) {
@@ -124,10 +128,6 @@ class Table_Collection extends Omeka_Db_Table
                        ->group('collections.id')
                        ->order(array("IF(ISNULL(et_sort.text), 1, 0) $sortDir",
                                      "et_sort.text $sortDir"));
-            }
-        } else {
-            if ($sortField == 'random') {
-                $select->order('RAND()');
             }
         }
     }

@@ -1,7 +1,7 @@
         </div><!-- end content -->
 
     </div><!-- end wrap -->
-    
+
 
     <footer>
 
@@ -13,15 +13,15 @@
             <p><?php echo __('Proudly powered by <a href="http://omeka.org">Omeka</a>.'); ?></p>
         </div>
 
-        <?php fire_plugin_hook('public_footer'); ?>
+        <?php fire_plugin_hook('public_footer', array('view' => $this)); ?>
 
     </footer><!-- end footer -->
 
     <script type="text/javascript">
     jQuery(document).ready(function () {
-        Omeka.showAdvancedForm();        
-        Omeka.moveNavOnResize();        
-        Omeka.mobileMenu();        
+        Omeka.showAdvancedForm();
+        Omeka.moveNavOnResize();
+        Omeka.mobileMenu();
     });
     </script>
 

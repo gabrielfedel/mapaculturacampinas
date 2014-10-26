@@ -7,7 +7,13 @@
     <meta name="description" content="<?php echo $description; ?>">
     <?php endif; ?>
 
-    <title><?php echo option('site_title'); echo isset($title) ? ' | ' . strip_formatting($title) : ''; ?></title>
+    <?php
+    if (isset($title)) {
+        $titleParts[] = strip_formatting($title);
+    }
+    $titleParts[] = option('site_title');
+    ?>
+    <title><?php echo implode(' &middot; ', $titleParts); ?></title>
 
     <?php echo auto_discovery_link_tags(); ?>
 
@@ -16,9 +22,9 @@
 
     <!-- Stylesheets -->
     <?php
-    queue_css_url('http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic');
-    queue_css_file('normalize');
-    queue_css_file('style');
+    queue_css_url('//fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic');
+    queue_css_file(array('iconfonts', 'normalize', 'style'), 'screen');
+    queue_css_file('print', 'print');
     echo head_css();
     ?>
 
@@ -34,13 +40,17 @@
     <?php fire_plugin_hook('public_body', array('view'=>$this)); ?>
     <div id="wrap">
         <header>
-            <?php fire_plugin_hook('public_header'); ?>
             <div id="site-title">
                 <?php echo link_to_home_page(theme_logo()); ?>
             </div>
             <div id="search-container">
+                <?php if (get_theme_option('use_advanced_search') === null || get_theme_option('use_advanced_search')): ?>
                 <?php echo search_form(array('show_advanced' => true)); ?>
+                <?php else: ?>
+                <?Php echo search_form(); ?>
+                <?php endif; ?>
             </div>
+            <?php fire_plugin_hook('public_header', array('view'=>$this)); ?>
         </header>
 
         <nav class="top">
@@ -48,4 +58,8 @@
         </nav>
 
         <div id="content">
-            <?php fire_plugin_hook('public_content_top'); ?>
+            <?php
+                if(! is_current_url(WEB_ROOT)) {
+                  fire_plugin_hook('public_content_top', array('view'=>$this));
+                }
+            ?>

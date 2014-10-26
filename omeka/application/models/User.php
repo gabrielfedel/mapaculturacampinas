@@ -133,7 +133,7 @@ class User extends Omeka_Record_AbstractRecord
         
         // User form input does not allow HTML tags or superfluous whitespace
         $filters = array('*'        => array('StripTags','StringTrim'),
-                         'username' => $username_filter,
+                         'username' => 'StringTrim',
                          'active'   => 'Boolean');
             
         $filter = new Zend_Filter_Input($filters, null, $post, $options);
@@ -185,8 +185,8 @@ class User extends Omeka_Record_AbstractRecord
         // Validate the username
         if (strlen($this->username) < self::USERNAME_MIN_LENGTH || strlen($this->username) > self::USERNAME_MAX_LENGTH) {
             $this->addError('username', __('The username "%1$s" must be between %2$s and %3$s characters.',$this->username, self::USERNAME_MIN_LENGTH, self::USERNAME_MAX_LENGTH));
-        } else if (!Zend_Validate::is($this->username, 'Alnum')) {
-            $this->addError('username', __("The username must be alphanumeric."));
+        } else if (! Zend_Validate::is($this->username, 'Regex', array('pattern' => '#^[a-zA-Z0-9.*@+!\-_%\#\^&$]*$#u'))) {
+            $this->addError('username', __('Whitespace is not allowed. Only these special characters may be used: %s', ' + ! @ # $ % ^ & * . - _' ));
         } else if (!$this->fieldIsUnique('username')) {
             $this->addError('username', __("'%s' is already in use. Please choose another username.", $this->username));
         }

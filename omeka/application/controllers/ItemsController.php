@@ -11,6 +11,8 @@
  */
 class ItemsController extends Omeka_Controller_AbstractActionController
 {
+    protected $_autoCsrfProtection = true;
+
     public $contexts = array(
             'browse' => array('json', 'dcmes-xml', 'rss2', 'omeka-xml', 'omeka-json', 'atom'),
             'show'   => array('json', 'dcmes-xml', 'omeka-xml', 'omeka-json', 'atom')
@@ -81,9 +83,8 @@ class ItemsController extends Omeka_Controller_AbstractActionController
     {
         // Get all the element sets that apply to the item.
         $this->view->elementSets = $this->_getItemElementSets();
-        $pathToConvert = get_option('path_to_convert');
-        if (empty($pathToConvert) && is_allowed('Settings', 'edit')) {
-            $this->_helper->flashMessenger('The path to Image Magick has not been set. No derivative images will be created. If you would like Omeka to create derivative images, please add the path to your settings form.');
+        if (!Zend_Registry::isRegistered('file_derivative_creator') && is_allowed('Settings', 'edit')) {
+            $this->_helper->flashMessenger(__('The ImageMagick directory path has not been set. No derivative images will be created. If you would like Omeka to create derivative images, please set the path in Settings.'));
         }
         parent::editAction();
     }
@@ -142,9 +143,8 @@ class ItemsController extends Omeka_Controller_AbstractActionController
     {
         // Get all the element sets that apply to the item.
         $this->view->elementSets = $this->_getItemElementSets();
-        $pathToConvert = get_option('path_to_convert');
-        if (empty($pathToConvert) && is_allowed('Settings', 'edit')) {
-            $this->_helper->flashMessenger('The path to Image Magick has not been set. No derivative images will be created. If you would like Omeka to create derivative images, please add the path to your settings form.');
+        if (!Zend_Registry::isRegistered('file_derivative_creator') && is_allowed('Settings', 'edit')) {
+            $this->_helper->flashMessenger(__('The ImageMagick directory path has not been set. No derivative images will be created. If you would like Omeka to create derivative images, please set the path in Settings.'));
         }
         return parent::addAction();
     }
@@ -177,8 +177,10 @@ class ItemsController extends Omeka_Controller_AbstractActionController
 
         //Must be logged in to view items specific to certain users
         if ($this->_getParam('user') && !$this->_helper->acl->isAllowed('browse', 'Users')) {
-            $this->_helper->flashMessenger('May not browse by specific users.');
             $this->_setParam('user', null);
+            // Zend re-reads from GET/POST on every getParams() so we need to
+            // also remove these.
+            unset($_GET['user'], $_POST['user']);
         }
         
         parent::browseAction();

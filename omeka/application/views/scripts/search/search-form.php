@@ -1,5 +1,5 @@
 <?php echo $this->form('search-form', $options['form_attributes']); ?>
-    <?php echo $this->formText('query', $filters['query']); ?>
+    <?php echo $this->formText('query', $filters['query'], array('title' => __('Search'))); ?>
     <?php if ($options['show_advanced']): ?>
     <fieldset id="advanced-form">
         <fieldset id="query-types">
@@ -19,5 +19,5 @@
         <p><?php echo link_to_item_search(__('Advanced Search (Items only)')); ?></p>
     </fieldset>
     <?php endif; ?>
-    <?php echo $this->formSubmit(null, $options['submit_value']); ?>
+    <?php echo $this->formButton('submit_search', __('Search'), array('type' => 'submit')); ?>
 </form>

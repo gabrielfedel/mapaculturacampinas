@@ -36,6 +36,10 @@ class Table_File extends Omeka_Db_Table
                     }
                     break;
                     
+                case 'original_filename':
+                    $select->where('files.original_filename = ?', $paramValue);
+                    break;
+
                 case 'size_greater_then':
                     $select->where('files.size > ?', $paramValue);
                     break;
@@ -149,6 +153,26 @@ class Table_File extends Omeka_Db_Table
         $this->_orderFilesBy($select, $sort);
 
         return $this->fetchObjects($select, array($itemId));
+    }
+
+    /**
+     * Get a single file associated with an item, by index.
+     *
+     * @param integer $itemId
+     * @param integer $index
+     * @param string $sort The manner by which to order the files. For example:
+     *  'id': file id, 'filename' = alphabetical by filename. The default is
+     *  'order', following the user's specified order.
+     * @return File|null
+     */
+    public function findOneByItem($itemId, $index = 0, $sort = 'order')
+    {
+        $select = $this->getSelect();
+        $select->where('files.item_id = ?');
+        $this->_orderFilesBy($select, $sort);
+        $select->limit(1, $index);
+
+        return $this->fetchObject($select, array($itemId));
     }
 
     /**

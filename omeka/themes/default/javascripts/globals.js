@@ -35,11 +35,11 @@ if (!Omeka) {
     Omeka.showAdvancedForm = function () {
         var advancedForm = $('#advanced-form');
         var searchTextbox = $('#search-form input[type=text]');
-        var searchSubmit = $('#search-form input[type=submit]');
-        if (advancedForm) {
-            searchTextbox.css("width", "60%");
+        var searchSubmit = $('#search-form button');
+        if (advancedForm.length > 0) {
             advancedForm.css("display", "none");
-            searchSubmit.addClass("with-advanced").after('<a href="#" id="advanced-search" class="button">Advanced Search</a>');
+            $('#search-form').addClass("with-advanced");
+            advancedForm.before('<a href="#" id="advanced-search" class="button">Advanced Search</a>');
             advancedForm.click(function (event) {
                 event.stopPropagation();
             });
@@ -55,8 +55,6 @@ if (!Omeka) {
                     $(this).unbind(event);
                 });
             });
-        } else {
-            $('#search-form input[type=submit]').addClass("blue button");
         }
     };
     

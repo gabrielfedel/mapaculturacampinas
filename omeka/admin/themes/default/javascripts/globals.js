@@ -22,9 +22,11 @@ if (!Omeka) {
             theme_advanced_buttons1: "bold,italic,underline,|,justifyleft,justifycenter,justifyright,|,bullist,numlist,|,link,formatselect,code",
             theme_advanced_buttons2: "",
             theme_advanced_buttons3: "",
-            plugins: "paste,inlinepopups,media",
+            theme_advanced_blockformats: "p,address,pre,h1,h2,h3,h4,h5,h6,blockquote,address,div",
+            plugins: "paste,inlinepopups,media,autoresize",
             media_strict: false,
-            width: "100%"
+            width: "100%",
+            autoresize_max_height: 500
         };
 
         tinyMCE.init($.extend(initParams, params));
@@ -88,27 +90,24 @@ if (!Omeka) {
 
     Omeka.showAdvancedForm = function () {
         var advancedForm = $('#advanced-form');
-        if (advancedForm) {
-            $('#search-form input[type=submit]').addClass("blue button with-advanced").after('<a href="#" id="advanced-search" class="blue button">Advanced Search</a>');
-            $('#query').css('width','65%');
-            advancedForm.click(function (event) {
-                event.stopPropagation();
+        $('#search-form').addClass("with-advanced");
+        $('#search-form button').addClass("blue button");
+        advancedForm.before('<a href="#" id="advanced-search" class="blue button">Advanced Search</a>');
+        advancedForm.click(function (event) {
+            event.stopPropagation();
+        });
+        $("#advanced-search").click(function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            advancedForm.fadeToggle();
+            $(document).click(function (event) {
+                if (event.target.id == 'query') {
+                    return;
+                }
+                advancedForm.fadeOut();
+                $(this).unbind(event);
             });
-            $("#advanced-search").click(function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                advancedForm.fadeToggle();
-                $(document).click(function (event) {
-                    if (event.target.id == 'query') {
-                        return;
-                    }
-                    advancedForm.fadeOut();
-                    $(this).unbind(event);
-                });
-            });
-        } else {
-            $('#search-form input[type=submit]').addClass("blue button");
-        }
+        });
     };
 
     Omeka.addReadyCallback = function (callback, params) {

@@ -94,12 +94,11 @@ class Omeka_View_Helper_ItemSearchFilters extends Zend_View_Helper_Abstract
                 }
                 $elementID = $row['element_id'];
                 $elementDb = $db->getTable('Element')->find($elementID);
-                $element = $elementDb->name;
-                $type = $row['type'];
-                $terms = $row['terms'];
+                $element = __($elementDb->name);
+                $type = __($row['type']);
                 $advancedValue = $element . ' ' . $type;
-                if ($terms) {
-                    $advancedValue .= ' "' . $terms . '"';
+                if (isset($row['terms'])) {
+                    $advancedValue .= ' "' . $row['terms'] . '"';
                 }
                 $advancedArray[$i] = $advancedValue;
             }
