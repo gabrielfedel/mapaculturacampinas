@@ -31,13 +31,13 @@
     <div class="pagination"><?php echo pagination_links(); ?></div>
     
     <h2><?php echo __('Português'); ?></h2>
-    <a href="http://mapa.cultcampinas.org/fullscreen/mapa"><img src="imagens/mapa.png"></a>
-    <a href="http://mapa.cultcampinas.org/fullscreen/roteiro-centro"><img src="imagens/roteiro_centro.png"></a>
-    <a href="http://mapa.cultcampinas.org/fullscreen/roteiro-afro"><img src="imagens/roteiro_afro.png"></a>
+    <a href="neatline/fullscreen/mapa"><img src="imagens/mapa.png"></a>
+    <a href="neatline/fullscreen/roteiro-centro"><img src="imagens/roteiro_centro.png"></a>
+    <a href="neatline/fullscreen/roteiro-afro"><img src="imagens/roteiro_afro.png"></a>
     
     <h2><?php echo __('English'); ?></h2>
-    <a href="http://mapa.cultcampinas.org/fullscreen/roteiro-centro-en"><img src="imagens/roteiro_centro_en.png"></a>
-    <a href="http://mapa.cultcampinas.org/fullscreen/roteiro-afro-en"><img src="imagens/roteiro_afro_en.png"></a>
+    <a href="neatline/fullscreen/roteiro-centro-en"><img src="imagens/roteiro_centro_en.png"></a>
+    <a href="neatline/fullscreen/roteiro-afro-en"><img src="imagens/roteiro_afro_en.png"></a>
     <div class="pagination"><?php echo pagination_links(); ?></div>
 
   <?php endif; ?>
