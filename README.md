@@ -9,8 +9,7 @@ Mais especificamente as modificações ocorreram sobre o tema berlin e sobre o n
 
 Todas as modificações seguem a GPL 3 assim como Omeka e Neatline.
 
-Todas as modificações foram realizadas por Gabriel Fedel <fedel@fedel.net.br>
+Todas as modificações foram realizadas por Gabriel Fedel (@gabrielfedel), Amarilis (@amariliscamargo) e Tel Amiel (@tamielbr)
 
 Os arquivos e o banco de dados não estão no repositório ainda.
-
 

@@ -7,7 +7,7 @@ class CommentingPlugin extends Omeka_Plugin_AbstractPlugin
     protected $_hooks = array(
         'install',
         'uninstall',
-        'public_items_show',        
+        'public_items_show',
         'public_collections_show',
         'public_head',
         'admin_head',
@@ -15,14 +15,38 @@ class CommentingPlugin extends Omeka_Plugin_AbstractPlugin
         'config',
         'define_acl',
         'after_delete_record',
-        'upgrade'
+        'upgrade',
+        'initialize'
     );
 
     protected $_filters = array(
         'admin_navigation_main',
-        'search_record_types'
+        'search_record_types',
+        'api_resources',
+        'api_extend_items',
+        'api_extend_collections'
     );
-    
+
+    /**
+     * Add the translations.
+     */
+    public function hookInitialize()
+    {
+        add_translation_source(dirname(__FILE__) . '/languages');
+    }
+
+    public function setUp()
+    {
+
+        if(plugin_is_active('SimplePages')) {
+            $this->_filters[] = 'api_extend_simple_pages';
+        }
+        if(plugin_is_active('ExhibitBuilder')) {
+            $this->_filters[] = 'api_extend_exhibit_pages';
+        }
+        parent::setUp();
+    }
+
     public function hookInstall()
     {
         $db = $this->_db;
@@ -46,7 +70,7 @@ class CommentingPlugin extends Omeka_Plugin_AbstractPlugin
               `is_spam` tinyint(1) NOT NULL DEFAULT '0',
               PRIMARY KEY (`id`),
               KEY `record_id` (`record_id`,`user_id`,`parent_comment_id`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
         ";
         $db->query($sql);
         set_option('commenting_comment_roles', serialize(array()));
@@ -58,42 +82,40 @@ class CommentingPlugin extends Omeka_Plugin_AbstractPlugin
 
     public function hookUpgrade($args)
     {
-        $old = $args['old'];
-        $new = $args['new'];
-        switch($old) {
-            case '1.0' :
-                if(!get_option('commenting_comment_roles')) {
-                    $commentRoles = array('super');
-                    set_option('commenting_comment_roles', serialize($commentRoles));
-                }
+        $db = $this->_db;
+        $old = $args['old_version'];
+        $new = $args['new_version'];
 
-                if(!get_option('commenting_moderate_roles')) {
-                    $moderateRoles = array('super');
-                    set_option('commenting_moderate_roles', serialize($moderateRoles));
-                }
+        if(version_compare($old, '1.0', '<')) {
+            if(!get_option('commenting_comment_roles')) {
+                $commentRoles = array('super');
+                set_option('commenting_comment_roles', serialize($commentRoles));
+            }
 
-                if(!get_option('commenting_noapp_comment_roles')) {
-                    set_option('commenting_noapp_comment_roles', serialize(array()));
-                }
+            if(!get_option('commenting_moderate_roles')) {
+                $moderateRoles = array('super');
+                set_option('commenting_moderate_roles', serialize($moderateRoles));
+            }
 
-                if(!get_option('commenting_view_roles')) {
-                    set_option('commenting_view_roles', serialize(array()));
-                }
-            break;
-            
-            case '1.1':
-                $db = $this->_db;
-                $sql = "ALTER TABLE `comments` ADD `flagged` BOOLEAN NOT NULL AFTER `approved` ";
-                $db->query($sql);
-                break;
-                
+            if(!get_option('commenting_noapp_comment_roles')) {
+                set_option('commenting_noapp_comment_roles', serialize(array()));
+            }
+
+            if(!get_option('commenting_view_roles')) {
+                set_option('commenting_view_roles', serialize(array()));
+            }
         }
-        
-        if($new == '2.0') {
-            $sql = "ALTER TABLE `comments` ADD `flagged` BOOLEAN NOT NULL DEFAULT '0' AFTER `approved` ";
+
+        if(version_compare($old, '2.0', '<')) {
+            $sql = "ALTER TABLE `$db->Comment` ADD `flagged` BOOLEAN NOT NULL DEFAULT '0' AFTER `approved` ";
             $db->query($sql);
+        }
+
+        if(version_compare($old, '2.1', '<')) {
             delete_option('commenting_noapp_comment_roles');
             set_option('commenting_reqapp_comment_roles', serialize(array()));
+            $sql = "ALTER TABLE `$db->Comment` CHANGE `flagged` `flagged` TINYINT( 1 ) NOT NULL DEFAULT '0'";
+            $db->query($sql);
         }
     }
 
@@ -116,7 +138,7 @@ class CommentingPlugin extends Omeka_Plugin_AbstractPlugin
     {
         queue_css_file('commenting');
     }
-    
+
     public function hookAfterDeleteRecord($args)
     {
         $record = $args['record'];
@@ -128,41 +150,41 @@ class CommentingPlugin extends Omeka_Plugin_AbstractPlugin
     }
 
     public static function showComments($args = array())
-    {    
+    {
         echo "<div id='comments-container'>";
-        if( (get_option('commenting_allow_public') == 1) 
-                || (get_option('commenting_allow_public_view') == 1) 
+        if( (get_option('commenting_allow_public') == 1)
+                || (get_option('commenting_allow_public_view') == 1)
                 || is_allowed('Commenting_Comment', 'show') ) {
             if(isset($args['view'])) {
                 $view = $args['view'];
             } else {
                 $view = get_view();
             }
-            
+
             $view->addHelperPath(COMMENTING_PLUGIN_DIR . '/helpers', 'Commenting_View_Helper_');
             $options = array('threaded'=> get_option('commenting_threaded'), 'approved'=>true);
-            
+
             $comments = isset($args['comments']) ? $args['comments'] : $view->getComments($options);
             echo $view->partial('comments.php', array('comments'=>$comments, 'threaded'=>$options['threaded']));
         }
-        
-        if( (get_option('commenting_allow_public') == 1) 
+
+        if( (get_option('commenting_allow_public') == 1)
                 || is_allowed('Commenting_Comment', 'add') ) {
             echo "<div id='comment-main-container'>";
             echo $view->getCommentForm();
             echo "</div>";
-        }    
+        }
         echo "</div>";
     }
-    
+
     public function hookPublicItemsShow($args)
     {
-        $this::showComments($args);
+        self::showComments($args);
     }
 
     public function hookPublicCollectionsShow($args)
     {
-        $this::showComments($args);
+        self::showComments($args);
     }
 
     public function hookConfig($args)
@@ -189,7 +211,7 @@ class CommentingPlugin extends Omeka_Plugin_AbstractPlugin
     {
         $acl = $args['acl'];
         $acl->addResource('Commenting_Comment');
-        $commentRoles = unserialize(get_option('commenting_comment_roles'));        
+        $commentRoles = unserialize(get_option('commenting_comment_roles'));
         $moderateRoles = unserialize(get_option('commenting_moderate_roles'));
         $viewRoles = unserialize(get_option('commenting_view_roles'));
         $acl->allow(null, 'Commenting_Comment', array('flag'));
@@ -229,15 +251,67 @@ class CommentingPlugin extends Omeka_Plugin_AbstractPlugin
     public function filterAdminNavigationMain($tabs)
     {
         if(is_allowed('Commenting_Comment', 'update-approved') ) {
-            $tabs[] = array('uri'=> url('commenting/comment/browse'), 'label'=>'Comments' );
+            $tabs[] = array('uri'=> url('commenting/comment/browse'), 'label'=>__('Comments') );
         }
 
         return $tabs;
     }
-    
+
     public function filterSearchRecordTypes($types)
     {
         $types['Comment'] = __('Comments');
         return $types;
+    }
+
+    public function filterApiResources($apiResources)
+    {
+        $apiResources['comments'] = array(
+                'record_type' => 'Comment',
+                'actions' => array('get', 'index'),
+                'index_params' => array('record_type', 'record_id')
+        );
+        return $apiResources;
+    }
+
+    public function filterApiExtendItems($extend, $args)
+    {
+        return $this->_filterApiExtendRecords($extend, $args);
+    }
+
+    public function filterApiExtendCollections($extend, $args)
+    {
+        return $this->_filterApiExtendRecords($extend, $args);
+    }
+
+    public function filterApiExtendSimplePages($extend, $args)
+    {
+        return $this->_filterApiExtendRecords($extend, $args);
+    }
+
+    public function filterApiExtendExhibitPages($extend, $args)
+    {
+        return $this->_filterApiExtendRecords($extend, $args);
+    }
+
+    private function _filterApiExtendRecords($extend, $args)
+    {
+        $record = $args['record'];
+        $recordClass = get_class($record);
+        $extend['comments'] = array(
+                'count' => $this->_countComments($record),
+                'resource' => 'comments',
+                'url' => Omeka_Record_Api_AbstractRecordAdapter::getResourceUrl("/comments?record_type=$recordClass&record_id={$record->id}"),
+                );
+
+        return $extend;
+    }
+
+    private function _countComments($record)
+    {
+        $params = array(
+                'record_type' => get_class($record),
+                'record_id' => $record->id
+                );
+        return get_db()->getTable('Comment')->count($params);
     }
 }

@@ -8,10 +8,10 @@ OmekaMap.prototype = {
     
     map: null,
     mapDivId: null,
-    mapSize: 'small',
     markers: [],
     options: {},
     center: null,
+    markerBounds: null,
     
     addMarker: function (lat, lng, options, bindHtml)
     {        
@@ -40,38 +40,49 @@ OmekaMap.prototype = {
         }
                
         this.markers.push(marker);
+        this.markerBounds.extend(options.position);
         return marker;
+    },
+
+    fitMarkers: function () {
+        if (this.markers.length == 1) {
+            this.map.setCenter(this.markers[0].getPosition());
+        } else {
+            this.map.fitBounds(this.markerBounds);
+        }
     },
     
     initMap: function () {
-        
-        // Build the map.
-        var mapOptions = {
-            zoom: this.center.zoomLevel,
-            center: new google.maps.LatLng(this.center.latitude, this.center.longitude),
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            navigationControl: true,
-            mapTypeControl: true
-        };    
-        switch (this.mapSize) {
-        case 'small':
-            mapOptions.navigationControlOptions = {
-                style: google.maps.NavigationControlStyle.SMALL
-            };
-            break;
-        case 'large':
-        default:
-            mapOptions.navigationControlOptions = {
-                style: google.maps.NavigationControlStyle.DEFAULT
-            };
-        }
-
-        this.map = new google.maps.Map(document.getElementById(this.mapDivId), mapOptions); 
-
         if (!this.center) {
             alert('Error: The center of the map has not been set!');
             return;
         }
+
+        // Build the map.
+        var mapOptions = {
+            zoom: this.center.zoomLevel,
+            center: new google.maps.LatLng(this.center.latitude, this.center.longitude),
+        };
+
+        switch (this.options.mapType) {
+        case 'hybrid':
+            mapOptions.mapTypeId = google.maps.MapTypeId.HYBRID;
+            break;
+        case 'satellite':
+            mapOptions.mapTypeId = google.maps.MapTypeId.SATELLITE;
+            break;
+        case 'terrain':
+            mapOptions.mapTypeId = google.maps.MapTypeId.TERRAIN;
+            break;
+        case 'roadmap':
+        default:
+            mapOptions.mapTypeId = google.maps.MapTypeId.ROADMAP;
+        }
+
+        jQuery.extend(mapOptions, this.options.mapOptions);
+
+        this.map = new google.maps.Map(document.getElementById(this.mapDivId), mapOptions);
+        this.markerBounds = new google.maps.LatLngBounds();
 
         // Show the center marker if we have that enabled.
         if (this.center.show) {
@@ -95,6 +106,13 @@ function OmekaMapBrowse(mapDivId, center, options) {
 OmekaMapBrowse.prototype = {
     
     afterLoadItems: function () {
+        if (this.options.fitMarkers) {
+            this.fitMarkers();
+        }
+
+        if (!this.options.list) {
+            return;
+        }
         var listDiv = jQuery('#' + this.options.list);
 
         if (!listDiv.size()) {
@@ -144,7 +162,7 @@ OmekaMapBrowse.prototype = {
                     return false;
                 }            
             }
-        });        
+        });
     },
     
     getBalloonStyling: function (xml) {
@@ -217,9 +235,6 @@ function OmekaMapSingle(mapDivId, center, options) {
     jQuery.extend(true, this, omekaMap);
     this.initMap();
 }
-OmekaMapSingle.prototype = {
-    mapSize: 'small'
-};
 
 function OmekaMapForm(mapDivId, center, options) {
     var that = this;
@@ -274,8 +289,6 @@ function OmekaMapForm(mapDivId, center, options) {
 }
 
 OmekaMapForm.prototype = {
-    mapSize: 'large',
-    
     /* Get the geolocation of the address and add marker. */
     findAddress: function (address) {
         var that = this;

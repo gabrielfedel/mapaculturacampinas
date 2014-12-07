@@ -61,8 +61,12 @@ class Commenting_CommentController extends Omeka_Controller_AbstractActionContro
         $role = current_user()->role;
         $reqAppCommentRoles = unserialize(get_option('commenting_reqapp_comment_roles'));
         $requiresApproval = in_array($role, $reqAppCommentRoles);
+        //via Daniel Lind -- https://groups.google.com/forum/#!topic/omeka-dev/j-tOSAVdxqU
+        $reqAppPublicComment = (bool) get_option('commenting_require_public_moderation');
+        $requiresApproval = $requiresApproval || (!is_object(current_user()) && $reqAppPublicComment);
+        //end Daniel Lind contribution        
         if($requiresApproval) {
-            $this->_helper->flashMessenger("Your comment is awaiting moderation", 'success');
+            $this->_helper->flashMessenger(__("Your comment is awaiting moderation"), 'success');
         }
         
         //need getValue to run the filter
@@ -195,13 +199,13 @@ class Commenting_CommentController extends Omeka_Controller_AbstractActionContro
     
     private function emailFlagged($comment)
     {
-        $mail = new Zend_Mail();
+        $mail = new Zend_Mail('UTF-8');
         $mail->addHeader('X-Mailer', 'PHP/' . phpversion());
         $mail->setFrom(get_option('administrator_email'), get_option('site_title'));
         $mail->addTo(get_option('commenting_flag_email'));
-        $subject = "A comment on " . get_option('site_title') . " has been flagged as inappropriate";
-        $body = "<p>The comment <blockquote>{$comment->body}</blockquote> has been flagged as inappropriate.</p>";
-        $body .= "<p>You can manage the comment <a href='" . WEB_ROOT ."{$comment->path}'>here</a></p>";
+        $subject = __("A comment on %s has been flagged as inappropriate", get_option('site_title'));
+        $body = "<p>" . __("The comment %s has been flagged as inappropriate.", "<blockquote>{$comment->body}</blockquote>" ) . "</p>";
+        $body .= "<p>" . __("You can manage the comment %s", "<a href='" . WEB_ROOT ."{$comment->path}'>" . __('here') . "</a>" ) . "</p>";
         $mail->setSubject($subject);
         $mail->setBodyHtml($body);
         try {

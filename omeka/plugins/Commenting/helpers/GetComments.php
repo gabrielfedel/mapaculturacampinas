@@ -5,15 +5,14 @@ class Commenting_View_Helper_GetComments extends Zend_View_Helper_Abstract
     
     private function _getRecordId($params)
     {
-//@TODO: update exhibit-builder handling for 2.0        
         if(isset($params['module'])) {
             switch($params['module']) {
                 case 'exhibit-builder':
                     //ExhibitBuilder uses slugs in the params, so need to negotiate around those
                     //to dig up the record_id and model
-                    if(isset($this->exhibit_page)) {
-                        $id = $this->exhibit_page->id;
-                    } else if(!empty($params['item_id'])) {
+                    if(isset($this->view->exhibit_page)) {
+                        $id = $this->view->exhibit_page->id;
+                    } else {
                         $id = $params['item_id'];
                     }
                     break;
@@ -35,14 +34,10 @@ class Commenting_View_Helper_GetComments extends Zend_View_Helper_Abstract
                 case 'exhibit-builder':
                     //ExhibitBuilder uses slugs in the params, so need to negotiate around those
                     //to dig up the record_id and model
-                    if(!empty($params['page_slug'])) {
-                        $page = exhibit_builder_get_current_page();
+                    if(!empty($params['page_slug_1'])) {
                         $model = 'ExhibitPage';
-                    } else if(!empty($params['item_id'])) {
-                        $model = 'Item';
                     } else {
-                        $section = exhibit_builder_get_current_section();
-                        $model = 'ExhibitSection';
+                        $model = 'Item';
                     }
                     break;
         
