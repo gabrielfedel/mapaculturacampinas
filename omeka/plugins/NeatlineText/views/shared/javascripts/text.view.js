@@ -8,8 +8,7 @@
  * @license     http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
-Neatline.module('Text', function(
-  Text, Neatline, Backbone, Marionette, $, _) {
+Neatline.module('Text', function(Text) {
 
 
   Text.View = Backbone.View.extend({
@@ -31,10 +30,20 @@ Neatline.module('Text', function(
 
 
     /**
-     * Initialize state trackers.
+     * Initialize state, bootstrap the collection.
+     *
+     * @param {Object} options
      */
-    initialize: function() {
+    initialize: function(options) {
+
+      this.slug = options.slug;
       this.model = null;
+
+      // Mount the bootstrapped collection of models.
+      this.records = new Neatline.Shared.Record.Collection(
+        Neatline.g.text.records
+      );
+
     },
 
 
@@ -49,7 +58,7 @@ Neatline.module('Text', function(
      */
     publishHighlight: function(e) {
       var model = this.getModelFromEvent(e);
-      if (model) this.publish('highlight', model);
+      if (model) this.publish('highlight', model, e);
     },
 
 
@@ -60,7 +69,7 @@ Neatline.module('Text', function(
      */
     publishUnhighlight: function(e) {
       var model = this.getModelFromEvent(e);
-      if (model) this.publish('unhighlight', model);
+      if (model) this.publish('unhighlight', model, e);
     },
 
 
@@ -71,12 +80,9 @@ Neatline.module('Text', function(
      */
     publishSelect: function(e) {
 
-      // Unselect currently-selected model.
-      this.publishUnselect();
-
       // Publish the new model.
       var model = this.getModelFromEvent(e);
-      if (model) this.publish('select', model);
+      if (model) this.publish('select', model, e);
 
       // Block the event from bubbling up to the view container, where it
       // would trigged `unselect`, effectively negating the selection.
@@ -87,9 +93,11 @@ Neatline.module('Text', function(
 
     /**
      * Unselect the currently-selected model.
+     *
+     * @param {Object} e: The DOM event.
      */
-    publishUnselect: function() {
-      if (this.model) this.publish('unselect', this.model);
+    publishUnselect: function(e) {
+      if (this.model) this.publish('unselect', this.model, e);
     },
 
 
@@ -156,6 +164,7 @@ Neatline.module('Text', function(
       var span = this.getSpansWithSlug(model.get('slug'))[0];
       if (!span) return;
 
+      // Scroll to span:
       this.$el.animate({
         scrollTop: span.offsetTop - this.options.padding
       }, {
@@ -192,28 +201,27 @@ Neatline.module('Text', function(
 
 
     /**
-     * Try to find a model in the collection that corresponds to a DOM
-     * event triggered from a tagged element.
+     * Try to find a model in the collection that corresponds to a DOM event
+     * triggered from a tagged element.
      *
      * @param {Object} e: The DOM event.
      * @return {String}: The target element's slug.
      */
     getModelFromEvent: function(e) {
-      return Text.__collection.findWhere({
-        slug: this.getSlugFromEvent(e)
-      });
+      return this.records.findWhere({ slug: this.getSlugFromEvent(e) });
     },
 
 
     /**
      * Publish an event with a model.
      *
-     * @param {String} event: An event name.
-     * @param {Object} model: A record model.
+     * @param {String} event: The Neatline event name.
+     * @param {Object} model: The record model.
+     * @param {Object} domEvent: The triggering DOM event.
      */
-    publish: function(event, model) {
+    publish: function(event, model, domEvent) {
       Neatline.vent.trigger(event, {
-        model: model, source: Text.ID
+        model: model, event: domEvent, source: this.slug
       });
     }
 
