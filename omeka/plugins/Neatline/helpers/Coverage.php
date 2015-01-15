@@ -1,11 +1,9 @@
 <?php
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 cc=80; */
-
 /**
  * @package     omeka
  * @subpackage  neatline
- * @copyright   2012 Rector and Board of Visitors, University of Virginia
+ * @copyright   2014 Rector and Board of Visitors, University of Virginia
  * @license     http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
@@ -21,11 +19,13 @@ function nl_extractWkt($coverage) {
     $wkt = null;
 
     // Get coverage format.
-    $format = geoPHP::detectFormat($coverage);
+    if (Validator::isValidWkt($coverage)) {
+        $format = geoPHP::detectFormat($coverage);
 
-    // Convert / reduce to WKT.
-    if (in_array($format, array('wkt', 'kml'))) {
-        $wkt = geoPHP::load($coverage)->out('wkt');
+        // Convert / reduce to WKT.
+        if (in_array($format, array('wkt', 'kml'))) {
+            $wkt = geoPHP::load($coverage)->out('wkt');
+        }
     }
 
     return $wkt;

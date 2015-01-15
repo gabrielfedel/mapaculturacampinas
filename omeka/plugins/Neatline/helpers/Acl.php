@@ -1,11 +1,9 @@
 <?php
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 cc=80; */
-
 /**
  * @package     omeka
  * @subpackage  neatline
- * @copyright   2012 Rector and Board of Visitors, University of Virginia
+ * @copyright   2014 Rector and Board of Visitors, University of Virginia
  * @license     http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
@@ -26,18 +24,21 @@ function nl_defineAcl($acl)
 {
 
 
-    // Register resources.
+    // Exhibits resource.
     if (!$acl->has('Neatline_Exhibits')) {
         $acl->addResource('Neatline_Exhibits');
     }
+
+    // Records resource.
     if (!$acl->has('Neatline_Records')) {
         $acl->addResource('Neatline_Records');
     }
 
 
-    // Public:
+    // Anonymous:
     // ------------------------------------------------------------------------
 
+    // Anyone can view items.
     $acl->allow(null, 'Items', array('get'));
 
     // Anyone can view exhibits.
@@ -103,5 +104,6 @@ function nl_defineAcl($acl)
     // Supers and admins can do everything.
     $acl->allow(array('super', 'admin'), 'Neatline_Exhibits');
     $acl->allow(array('super', 'admin'), 'Neatline_Records');
+
 
 }

@@ -1,11 +1,9 @@
 <?php
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 cc=80; */
-
 /**
  * @package     omeka
  * @subpackage  neatline
- * @copyright   2012 Rector and Board of Visitors, University of Virginia
+ * @copyright   2014 Rector and Board of Visitors, University of Virginia
  * @license     http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
@@ -18,7 +16,7 @@ class Neatline_ItemsController extends Neatline_Controller_Rest
      */
     public function init()
     {
-	$this->_helper->db->setDefaultModelName('Item');
+        $this->_helper->db->setDefaultModelName('Item');
         parent::init();
     }
 
@@ -29,15 +27,15 @@ class Neatline_ItemsController extends Neatline_Controller_Rest
      */
     public function getAction()
     {
+
         // Load the Omeka item.
         $item = $this->_helper->db->findById();
-
         $record = null;
 
         // If a record is specified, load it.
         if (!is_null($this->_request->record)) {
             $rTable = $this->_helper->db->getTable('NeatlineRecord');
-            $record = $rTable->find( $this->_request->record);
+            $record = $rTable->find($this->_request->record);
         }
 
         // Output the item metadata

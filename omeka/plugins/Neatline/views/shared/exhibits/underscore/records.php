@@ -1,11 +1,9 @@
 <?php
 
-/* vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2 cc=80; */
-
 /**
  * @package     omeka
  * @subpackage  neatline
- * @copyright   2012 Rector and Board of Visitors, University of Virginia
+ * @copyright   2014 Rector and Board of Visitors, University of Virginia
  * @license     http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
@@ -14,7 +12,7 @@
 <script id="record-list-template" type="text/template">
 
   <!-- Add record link. -->
-  <a href="#record/add" class="btn btn-primary btn-lg add">
+  <a href="#edit/new" class="btn btn-primary btn-lg add">
     <span class="glyphicon glyphicon-file"></span>
     <?php echo __('New Record'); ?>
   </a>
@@ -29,7 +27,7 @@
     <% records.each(function(r) { %>
 
       <!-- Record listing. -->
-      <a href="#record/<%= r.id %>" data-id="<%= r.id %>"
+      <a href="#edit/<%= r.id %>" data-id="<%= r.id %>"
         class="list-group-item">
 
         <!-- Title. -->

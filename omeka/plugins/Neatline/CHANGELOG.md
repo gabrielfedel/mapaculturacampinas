@@ -1,4 +1,71 @@
-## v2.2.0 ([commits](https://github.com/scholarslab/Neatline/compare/2.1.3...2.2.0)) ~ Pending
+
+## v2.3 ([commits](https://github.com/scholarslab/Neatline/compare/2.2.4...2.3.0)) ~ Pending
+
+#### Added Features
+
+  - It's now possible to "hard link" to inidividual records in exhibits. For example, if a record has an ID of "36", the route fragment `#records/36` will cause the exhibit to automatically focus on that record when the page load. Likewise, manually selecting a record in the exhibit will update the route.
+
+  - It's now possible to set the set the "Default Focus" value for a record independently of the "Default Zoom" value. If a focus is set, but not a zoom, the custom focus will be applied when the record is selected, and a zoom will be auto-computed based on the size of the record's geometry.
+
+  - Vice versa, the "Default Zoom" value can now be set independently of the "Default Focus." If a zoom is set, but not a focus, the custom zoom will be applied when the record is selected, and a focus will be auto-computed around the bounding box of the record's geometry.
+
+#### Changed Features
+
+  - The routes in the editor have been updated to be more semantic. Now, the starting list of records is at `#browse`, and search and pagination parameters are provided with `#browse/query=search-query` and `#browse/start=100`.
+
+#### Bug Fixes
+
+  - Fixes a problem that was causing the layer switcher to be covered by the Waypoints container when the exhibit was using a Google base layer.
+
+  - Fixes a bug that caused Omeka item imports to fail if an item had a "Coverage" value that started with the letter "p" but was _not_ a valid WKT string.
+
+#### Development Workflow
+
+  - Changes the process by which compiled Javascript and CSS payloads are committed to git:
+
+    - Instead of building the payloads into `/dist` directories, everything now goes into `/dist/development` directories.
+
+    - All of these directories are .gitignored, making it impossible for transient changes to the payloads during development to get accidentally sucked in commits.
+
+    - When a release is ready, run `grunt freeze`, which copies all of the `/dist/development` directories to sibling `dist/production` directories. The production directories are tracked, so any changes will get vacuumed up in the next commit.
+
+    - In the plugin, when queuing the assets, Neatline branches on the `APPLICATION_ENV` global and loads from `dist/development` or `dist/production` depending on the environment. This setting is toggled in [Omeka's `.htaccess` file](https://github.com/omeka/Omeka/blob/master/.htaccess.changeme#L14), making it easy to hallway test the exact files that will be used in production.
+
+## v2.2.4 ([commits](https://github.com/scholarslab/Neatline/compare/2.2.3...2.2.4)) ~ May 21, 2014
+
+#### Bug Fixes
+
+  - Re-includes the compiled documentation HTML in the release package, which fixes the inline documentation modals in the editor.
+
+## v2.2.3 ([commits](https://github.com/scholarslab/Neatline/compare/2.2.2...2.2.3)) ~ May 16, 2014
+
+#### Bug Fixes
+
+  - Fixes a bug caused by dependency mismatches in the bower components that broke the Javascript build in the editor.
+
+## v2.2.2 ([commits](https://github.com/scholarslab/Neatline/compare/2.2.1...2.2.2)) ~ May 15, 2014
+
+#### Changed Features
+
+  - Previously, if NeatlineFeatures were enabled, you couldn't use the CsvImport plugin to add WKT data into the coverage field and then have those features import into Neatline successfully. We've lifted that restriction.
+
+#### Performance Improvements
+
+  - Changes the MIME type for WMS layer image tiles from `image/png` to `image/png8`, which visually almost identical and load much faster.
+
+  - Adds `tiled=true` to WMS layer requests, which is necessary in order for Geoserver to return cached tiles.
+
+#### Bug Fixes
+
+  - Fixes a bug that occasionally caused WMS layers with undefined zindexes to slip "below" the base layer when the exhibit started.
+
+## v2.2.1 ([commits](https://github.com/scholarslab/Neatline/compare/2.2.0...2.2.1)) ~ February 13, 2014
+
+#### Bug Fixes
+
+  - Fixes problem with the ACL that was blocking anonymous users from viewing the Neatline-inflected item metadata.
+
+## v2.2.0 ([commits](https://github.com/scholarslab/Neatline/compare/2.1.3...2.2.0)) ~ January 15, 2014
 
 #### Added Features
 
@@ -34,7 +101,7 @@
 
   - Fixes a bug that caused the Omeka item search feature in the record form to display the the title of an item's parent _collection_, not the item itself, when the item belonged to a collection.
 
-  - Fixes a bug that caused modal windows in the editor (eg, the record delete confirmation pop-up) to get stuck on the screen if the user changed the route while the modal was open. 
+  - Fixes a bug that caused modal windows in the editor (eg, the record delete confirmation pop-up) to get stuck on the screen if the user changed the route while the modal was open.
 
 ## v2.1.3 ([commits](https://github.com/scholarslab/Neatline/compare/2.1.2...2.1.3)) ~ December 2, 2013
 
@@ -188,15 +255,15 @@
 
   - Just before executing a query, the records API will now pass out the fully-formed `Omeka_Db_Select` instance by way of the `neatline_query_records` filter, which can be used by sub-plugins to implement custom API parameters.
 
-  - For consistency with the rest of the theme, exhibit-specific themes now need to define a ```show.php``` file in order to override the default template, instead of ```template.php```.
+  - For consistency with the rest of the theme, exhibit-specific themes now need to define a `show.php` file in order to override the default template, instead of `template.php`.
 
-  - Previously, custom templates for Omeka items imported into Neatline exhibits could be defined under ```neatline/exhibits``` in the public theme. Now, the code will instead look for these templates under the _exhibit-specific_ theme directory for the exhibit. For example, if an exhibit has a URL slug of ```exhibit-slug```, the item templates will now be searched for under ```neatline/exhibits/themes/exhibit-slug```, along with the rest of the exhibit-specific assets.
+  - Previously, custom templates for Omeka items imported into Neatline exhibits could be defined under `neatline/exhibits` in the public theme. Now, the code will instead look for these templates under the _exhibit-specific_ theme directory for the exhibit. For example, if an exhibit has a URL slug of `exhibit-slug`, the item templates will now be searched for under `neatline/exhibits/themes/exhibit-slug`, along with the rest of the exhibit-specific assets.
 
-  - Previously, all layer definitions were included in a single ```layers.json``` file in the top-level plugin directory. This file has been moved to ```/layers/default.json```, and, instead of adding layers to ```defaults.json```, it's now possible to provide definitions for any number of layer groups in separate files. Eg, ```wms.json```, ```tilestream.json```, etc.
+  - Previously, all layer definitions were included in a single `layers.json` file in the top-level plugin directory. This file has been moved to `/layers/default.json`, and, instead of adding layers to `defaults.json`, it's now possible to provide definitions for any number of layer groups in separate files. Eg, `wms.json`, `tilestream.json`, etc.
 
 #### Bug Fixes
 
-  - Fixes bug found by [Mark Olson](mailto:mark.olson@duke.edu) in the SVG-to-WKT conversion library that was causing SVG documents with complex polygonal elements (eg ```<polygon>```, ```<polyline>```) to fail to parse when pasted into the Neatline editor.
+  - Fixes bug found by [Mark Olson](mailto:mark.olson@duke.edu) in the SVG-to-WKT conversion library that was causing SVG documents with complex polygonal elements (eg `<polygon>`, `<polyline>`) to fail to parse when pasted into the Neatline editor.
 
   - Previously, exhibits marked public were not getting filtered out of the public browse listings, and were visible to all users. This is fixed.
 
@@ -222,17 +289,17 @@
 
   - Makes it possible to create custom themes for individual Neatline exhibits:
 
-    - Themes are defined by creating a directory with a name that matches an exhibit slug under ```neatline/exhibits/themes/```, relative to the root of the public theme. For example, if an exhibit has a slug of ```exhibit-slug```, Neatline will load theme assets from ```neatline/exhibits/themes/exhibit-slug```.
+    - Themes are defined by creating a directory with a name that matches an exhibit slug under `neatline/exhibits/themes/`, relative to the root of the public theme. For example, if an exhibit has a slug of `exhibit-slug`, Neatline will load theme assets from `neatline/exhibits/themes/exhibit-slug`.
 
-    - Inside the theme directory, a ```tempalate.php``` file can be defined. If present, this template will be rendered instead of the default ```show.php``` that ships with Neatline.
+    - Inside the theme directory, a `tempalate.php` file can be defined. If present, this template will be rendered instead of the default `show.php` that ships with Neatline.
 
-    - All ```.js``` and ```.css``` files in the directory will be queued in the public view for the exhibit after the core application assets.
+    - All `.js` and `.css` files in the directory will be queued in the public view for the exhibit after the core application assets.
 
-  - The exhibits controller now respects the two separate options for admin and public page lengths (```per_page_admin```, ```per_page_public```).
+  - The exhibits controller now respects the two separate options for admin and public page lengths (`per_page_admin`, `per_page_public`).
 
 #### Changed Features
 
-  - In the ```item.php``` template used to determine the structure of the compiled item metadata in Neatline records, moves the file display below the default metadata output to conform with Omeka's default item show view.
+  - In the `item.php` template used to determine the structure of the compiled item metadata in Neatline records, moves the file display below the default metadata output to conform with Omeka's default item show view.
 
   - When the static bubble is displayed in response to the cursor hovering on a map feature, and then the cursor leaves the exhibit without first leaving the feature (eg, when the edge of the map occludes part of the feature), hide the static bubble as if the feature had been unselected. This prevents the bubble from getting "stuck" until the cursor re-enters the exhibit.
 

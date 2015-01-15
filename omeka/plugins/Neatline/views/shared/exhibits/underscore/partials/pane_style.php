@@ -1,11 +1,9 @@
 <?php
 
-/* vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2 cc=80; */
-
 /**
  * @package     omeka
  * @subpackage  neatline
- * @copyright   2012 Rector and Board of Visitors, University of Virginia
+ * @copyright   2014 Rector and Board of Visitors, University of Virginia
  * @license     http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
@@ -217,14 +215,16 @@
     'name'  => 'map-focus',
     'modal' => 'map-focus',
     'label' => 'Default Focus',
-    'bind'  => 'record:map_focus'
+    'bind'  => 'record:map_focus',
+    'useCurrent' => true
 )); ?>
 
 <?php echo common('neatline/input', array(
     'name'  => 'map-zoom',
     'modal' => 'map-zoom',
     'label' => 'Default Zoom',
-    'bind'  => 'record:map_zoom'
+    'bind'  => 'record:map_zoom',
+    'useCurrent' => true
 )); ?>
 
 <?php echo common('neatline/button', array(
