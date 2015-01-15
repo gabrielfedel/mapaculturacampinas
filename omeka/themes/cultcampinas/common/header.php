@@ -27,6 +27,7 @@
         queue_css_file('lib/style');
         queue_css_file('lib/normalize');
         queue_css_file('lib/font-awesome');
+        queue_css_file('lib/resp');
         //queue_css_file('lib/screen');
         echo head_css();
     ?>
@@ -64,60 +65,64 @@
 <!-- CABEÇALHO -->
 <div class="container-fluid">
     <header class="row">
-        <div class="col-md-12">
+        <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="row" style="background-color: #E45F56">
-                    <div id="rede" class="col-md-5 col-md-offset-1">
-                        <ul class="nav nav-pills" role="social-icons">
-                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                            <!--<li><a href="#"><i class="fa fa-youtube"></i></a></li>-->
-                            <!--<li><a href="#"><i class="fa fa-instagram"></i></a></li>-->
-                            <li><a href="http://mapa.revoada.net.br/contact"><i class="fa fa-envelope"></i></a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-5">
-                        <div class="navbar-form navbar-right" role="form">
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <?php echo search_form(array( 'show_advanced' => false )); ?>
-                                </div>
-                            </div> 
-                        </div>                               
-                    </div>
-                    <div class="col-md-1">
-                        &nbsp;
+                <div id="rede" class="col-md-5 col-sm-5 col-xs-6 col-md-offset-1 col-sm-offset-1">
+                    <ul class="nav nav-pills" role="social-icons">
+                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                        <!--<li><a href="#"><i class="fa fa-youtube"></i></a></li>-->
+                        <!--<li><a href="#"><i class="fa fa-instagram"></i></a></li>-->
+                        <li><a href="http://mapa.revoada.net.br/contact"><i class="fa fa-envelope"></i></a></li>
+                    </ul>
+                </div>
+                <div class="col-md-5 col-sm-5 col-xs-6 col-md-offset-1 col-sm-offset-1">
+                    <div class="navbar-form navbar-right" role="form">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <?php echo search_form(array( 'show_advanced' => false )); ?>
+                                <span class="busca_avancada"><?php echo link_to_item_search('+ Busca Avançada'); ?></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <!--logo do tema -->
-                <div class="row" style="background-color: #4AAAA5; display: flex; align-items: flex-end">
-                    <div  id="logo" class="col-md-4 col-md-offset-1">
+            </div>
+            <!-- Menu topo -->
+            <div class="row" style="background-color: #4AAAA5;display: flex; align-items: flex-end">
+                <div id="logo" class="col-md-5 col-sm-12 col-xs-12 col-md-offset-1 col-sm-offset-1">
                         <?php echo link_to_home_page('View Public Site', array('id'=>'public-link','class'=>'img-responsive')); ?><!--<img src="<?php echo img('logo.png'); ?>" /></a>-->
-                    </div>
-                <!--Fim do logo do tema -->
-                <!--Menu do topo -->
-                    <div class="col-md-7 hidden-xs">
-                       <div id="nav" class="nav nav-pills pull-right hidden-xs" role="menu">
-                        <?php echo public_nav_main(); ?>   
-                       </div>   
-                    </div>
-                <!--Fim do Menu do topo -->
                 </div>
-            <div class="row" style="background-color: #4AAAA5;">
-                <!--Menu para celulares -->
-                <div class="col-xs-12 hidden-md hidden-sm hidden-lg">
-                    <nav class="clearfix">
-                        <ul class="clearfix">
-                            <?php echo public_nav_main(); ?>   
-                        </ul>
-                        <a href="#" id="pull">Menu</a>
+                <div class="col-md-7 col-sm-offset-1 hidden-xs hidden-sm">
+                    <div id="nav" class="nav nav-pills pull-right" role="menu">
+                        <?php echo public_nav_main(); ?>   
+                    </div>   
+                </div>
+            </div>
+            <!--Fim do Menu topo-->
+            <!--Menu topo sm -->
+            <div class="row hidden-lg hidden-md hidden-xs" style="background-color: #283744;">
+                <div class="col-sm-12">&nbsp;</div>
+                <div class="col-sm-12">&nbsp;</div>
+                <div class="col-sm-12">
+                    <div id="nav" class="nav nav-pills pull-right" role="menu">
+                        <?php echo public_nav_main(); ?>   
+                    </div> 
+                </div>  
+            </div>
+            <!--Fim Menu sm-->
+            <!--Menu topo xs -->
+            <div class="row hidden-lg hidden-md hidden-sm" style="background-color: #283744;">
+                <div class="col-xs-12" style="padding:0;">
+                    <nav id="minimenu"class="clearfix">
+                        <?php echo public_nav_main(); ?>
+                        <a href="#" id="pull">&nbsp;&nbsp;&nbsp;</a>
                     </nav>
                 </div>
             </div>
-                <!--Fim do menu para celulares-->
+            <!--Fim Menu xs-->
         </div>
     </header>
 </div>
-            <!-- /CABEÇALHO -->      
-    <div class="container-fluid">
-        <?php fire_plugin_hook('public_content_top', array('view'=>$this)); ?>
+<!-- /CABEÇALHO -->      
+<div class="container-fluid">
+    <?php fire_plugin_hook('public_content_top', array('view'=>$this)); ?>

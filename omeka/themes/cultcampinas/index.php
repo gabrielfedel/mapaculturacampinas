@@ -1,9 +1,9 @@
 <?php echo head(array('bodyid'=>'home')); ?>
 <!-- SLIDE -->
-<div class="row" role="slider">
+<div class="row " role="slider">
     <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
         <!-- Indicators -->
-        <ol class="carousel-indicators">
+        <ol class="carousel-indicators hidden-xs">
         <!-- Função criada para buscar item por tags - criando a lista bolinha automaticamente-->
             <?php 
             $items = get_records('Item', array('tags'=>'mostrar'), 20); 
@@ -39,36 +39,32 @@
                   <?php }
                    else{ ?>
                     <div class="item">
+                       <?php } ?>
+                            <?php
+                            $title = metadata($item, array('Dublin Core', 'Title'));
+                            $description = metadata($item, array('Dublin Core', 'Description'), array('snippet' => 150));
+                            ?>
 
-               <?php } ?>
-                    <?php
-                    $title = metadata($item, array('Dublin Core', 'Title'));
-                    $description = metadata($item, array('Dublin Core', 'Description'), array('snippet' => 150));
-                    ?>
-
-                   <!-- Parte da função que chama a foto -->
-                   <?php  $images = $item->Files; $imagesCount = 1; ?>
-                                            <?php if ($images): ?>
-
-
-                    <?php foreach ($images as $image): ?>
+                           <!-- Parte da função que chama a foto -->
+                           <?php  $images = $item->Files; $imagesCount = 1; ?>
+                                                    <?php if ($images): ?>
+                            <?php foreach ($images as $image): ?>
                                 <?php if ($imagesCount ==1): ?>
-                                    <img src="<?php echo url('/'); ?>files/original/<?php echo $image->filename; ?>" height="200px"/>
+                                        <div class="imgContainer"><img src="<?php echo url('/'); ?>files/original/<?php echo $image->filename; ?>"/></div>
                                 <?php endif; ?>
-                            <?php $imagesCount++; endforeach; ?>
-
-                     <?php endif; ?>
-                    <!-- Fim da chamada da foto -->
-                     <div class="carousel-caption">
-                        <div id="box-green">
-                        <h3><?php echo link_to($item, 'show', strip_formatting($title)); ?></h3>
-                        <?php if ($description): ?>
-                                <p class="item-description"><?php echo $description; ?>
-                                    <span>&nbsp;<?php echo link_to($item, 'show', strip_formatting('SAIBA MAIS')); ?></span>
-                                </p>
-                        <?php endif; ?>
+                                <?php $imagesCount++; endforeach; ?>
+                        <div class="carousel-caption">
+                            <div id="box-green">
+                              <h3><?php echo link_to($item, 'show', strip_formatting($title)); ?></h3>
+                              <?php if ($description): ?>
+                                      <p class="item-description hidden-xs"><?php echo $description; ?>
+                                        <span>&nbsp;<?php echo link_to($item, 'show', strip_formatting('SAIBA MAIS')); ?></span>
+                                      </p>
+                              <?php endif; ?>
                         </div>
                     </div>
+                    <?php endif; ?>
+                    <!-- Fim da chamada da foto -->
                 </div>
                 <?php $count++; ?>
                 <?php endforeach; ?>
@@ -92,10 +88,10 @@
 <div class="container-fluid">
      <div class="row toggle_bar">
       <div class="cog-navigation">
-         <div class="col-md-6" id="toggle_class">
+         <div class="col-md-6 col-xs-6" id="toggle_class"> 
             <div id="link1" class="cog-nav-link clicado"><a class="info" href="#"  type="button">Mais Recentes</a></div>
         </div>
-        <div class="col-md-6" id="toggle_class">
+        <div class="col-md-6 col-xs-6" id="toggle_class">
             <div id="link2" class="cog-nav-link"><a class="gallery" href="#" type="button">Exposições em destaque</a></div>
         </div>
     </div>
@@ -113,22 +109,70 @@
 <div class='col-md-12'>
 
  <div class="content" id="info">
- 
-<?php if (get_theme_option('Display Featured Item') !== '0'): ?>
-<h2>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo __('Featured Item'); ?></h2><!-- Item em destaque -->
-<?php echo random_featured_items(); ?>
-<?php endif; ?>
+ <br/>
+
+<?php //Destaque
+//if (get_theme_option('Homepage Recent Items') !== '0'): ?>
+<!--<h2>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo __('Featured Item'); ?></h2>--><!-- Item em destaque -->
+<?php //echo random_featured_items(); ?>
+<?php //endif; ?>
+
+<?php
+//Adicionados recentemente
+    $recentItems = get_theme_option('Homepage Recent Items');
+    if ($recentItems === null || $recentItems === ''):
+        $recentItems = 4;
+    else:
+        $recentItems = (int) $recentItems;
+    endif;
+    if ($recentItems):
+    ?>
+    <div id="recent-items">
+        <?php echo recent_items($recentItems); ?>
+    </div><!--end recent-items -->
+    <?php endif; ?>
+    
+    <?php fire_plugin_hook('public_home', array('view' => $this)); ?>
 </div>
 
 <div class="content" id="gallery">
-    <?php if ((get_theme_option('Display Featured Exhibit')) && function_exists('exhibit_builder_display_random_featured_exhibit')): ?>
+  <div id="recent-items">
+     <?php 
+     //if ((get_theme_option('Display Featured Exhibit')) && function_exists('exhibit_builder_display_random_featured_exhibit')): ?>
     <!-- Featured Exhibit -->
-    <?php echo exhibit_builder_display_random_featured_exhibit(); ?>
-    <?php endif; ?>
-        <?php $items = get_records('Item', array('tags'=>'foo'), 20); 
+    <?php //echo exhibit_builder_display_random_featured_exhibit(); ?>
+    <?php //endif; ?>
 
-set_loop_records('items', $items);
-?>
+    <?php 
+        $exhibits=get_records('Exhibit' , array ('featured'=>true, 'sort'=>'recent'));
+        $i = 0; 
+        foreach($exhibits as $exhibit):
+          if ($i == 0) echo '<div class="row">';
+          if ($i%4 == 0) echo '</div><div class="row">';?>
+             <div class="col-md-3">    
+              <center>
+              <?php if ($exhibitImage = record_image($exhibit, 'square_thumbnail', array('class' => 'img-circle imgi'))): ?>
+              <?php echo exhibit_builder_link_to_exhibit($exhibit, $exhibitImage, array('class' => 'image')); ?>
+              <?php else: ?>
+                <div style="width: 200px; height: 200px; text-align:center; padding-top:3em; background:#fff;" class="img-circle tit_b">&nbsp;</div>             
+              <?php endif; ?>
+
+              <?php
+            echo '<center><h3 class="title_ini"><div id="title_center"><a href="/exhibits/show/'.$exhibit->slug.'">'.$exhibit->title.'</a></div></h3></center>';
+            $resumo_texto = $exhibit->description; 
+            if((strlen($resumo_texto)) <150){
+            echo '<span class="item-description" style="text-align:justify;"><p>'.$resumo_texto.'</p></span>';
+            }
+            else{
+             echo '<span class="item-description" style="text-align:justify;"><p>'.substr($resumo_texto,0,150).'...</p></span>'; 
+            }
+            ?>
+              </div>
+            <?php  
+            $i++;        
+        endforeach;
+    ?>
+  </div>
 </div>
 </div></div>
     </div>

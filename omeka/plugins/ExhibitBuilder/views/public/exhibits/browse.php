@@ -2,12 +2,7 @@
 $title = __('Browse Exhibits');
 echo head(array('title' => $title, 'bodyclass' => 'exhibits browse'));
 ?>
-<div id="content" class="container">
-            <div class="row rowcolor">
-                 <!--Left side -->
-            
-         <div class="col-md-12 textcontent">
-<h2><?php echo $title; ?> <?php echo __('(%s total)', $total_results); ?></h2>
+<h1><?php echo $title; ?> <?php echo __('(%s total)', $total_results); ?></h1>
 <?php if (count($exhibits) > 0): ?>
 
 <nav class="navigation secondary-nav">
@@ -47,5 +42,5 @@ echo head(array('title' => $title, 'bodyclass' => 'exhibits browse'));
 <?php else: ?>
 <p><?php echo __('There are no exhibits available yet.'); ?></p>
 <?php endif; ?>
-</div></div>
+
 <?php echo foot(); ?>

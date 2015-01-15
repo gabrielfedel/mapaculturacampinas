@@ -44,7 +44,7 @@ class Commenting_CommentForm extends Omeka_Form
             $emailOptions['value'] = $user->email;
             $nameOptions['value'] = $user->name;
         }
-        $topo='<br/><br/><br/><br/><h4><strong>Comente</strong></h4>';
+        $topo='<br/><h4><strong>Comente</strong></h4>';
              echo $topo;
         $this->addElement('text', 'author_name',array( 'class'=>'form-control spaceform','id'=>'pwd', 'placeholder'=>'Nome'), $nameOptions);
         $this->addElement('text', 'author_url',array( 'class'=>'form-control spaceform','id'=>'pwd', 'placeholder'=>'Site'), $urlOptions);

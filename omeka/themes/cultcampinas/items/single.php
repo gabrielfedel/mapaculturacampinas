@@ -3,7 +3,7 @@
             <div class="col-md-3">
           
                 <div class="item record">
-                    <?php
+                    <center><?php
                     $title = metadata($item, array('Dublin Core', 'Title'));
                     $description = metadata($item, array('Dublin Core', 'Description'), array('snippet' => 150));
                     ?>
@@ -13,8 +13,8 @@
                             array('class' => 'image'), 'show', $item
                         );
                     }
-                    ?>
-                    <h4 class="title_ini"><?php echo link_to($item, 'show', strip_formatting($title)); ?></h4><!-- Título do item -->
+                    ?></center>
+                    <center><h3 class="title_ini"><div id="title_center"><?php echo link_to($item, 'show', strip_formatting($title)); ?></div></h3></center><!-- Título do item -->
                     <?php if ($description): ?>
                         <p class="item-description"><?php echo $description; ?></p>
                     <?php endif; ?>

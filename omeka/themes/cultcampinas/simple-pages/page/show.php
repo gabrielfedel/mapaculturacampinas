@@ -10,10 +10,10 @@
         $title = metadata('simple_pages_page', 'title');
         $subtitle = metadata('simple_pages_page', 'title');
     }
-    echo head(array( 'title' => $title, 
+    echo head(array( //'title' => $title, 
         'bodyclass' => $bodyclass, 
         'bodyid' => metadata('simple_pages_page', 'slug'),
-        'subtitle' => $subtitle,
+        //'subtitle' => $subtitle,
         'currentUriOverride' => url($topSlug)
     ));
     

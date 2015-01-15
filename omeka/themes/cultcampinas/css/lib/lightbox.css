@@ -163,7 +163,7 @@ body:after {
 
 .lb-data {
   padding: 0 4px;
-  color: #ccc;
+  color: #FFF;
 }
 
 .lb-data .lb-details {
@@ -177,6 +177,8 @@ body:after {
   font-size: 13px;
   font-weight: bold;
   line-height: 1em;
+  /*titulo dos sliders */
+  color:#fff;
 }
 
 .lb-data .lb-number {
@@ -184,7 +186,7 @@ body:after {
   clear: left;
   padding-bottom: 1em;
   font-size: 12px;
-  color: #999999;
+  color:#fff;
 }
 
 .lb-data .lb-close {
