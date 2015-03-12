@@ -102,10 +102,24 @@ class Zend_Service_ReCaptcha extends Zend_Service_Abstract
      *
      * @var array
      */
+    //protected $_options = array(
+       // 'theme'               => 'red',
+       // 'lang'                => 'en',
+        //'custom_translations' => array(),
+    //);
     protected $_options = array(
         'theme'               => 'red',
-        'lang'                => 'en',
-        'custom_translations' => array(),
+        'lang'                => 'pt',
+        'custom_translations' => array('instructions_visual' => 'Digite o texto',
+                        'instructions_audio' => 'Digite o áudio',
+                        'play_again' => 'Ouvir Novamente',
+                        'visual_challenge' => 'Visual',
+                        'audio_challenge' => 'Audio',
+                        'refresh_btn' => 'Nova Recaptcha',
+                        'help_btn' => 'Ajuda',
+                        'incorrect_try_again' => 'Incorreto. Tente novamente.',
+
+            ),
     );
 
     /**

@@ -45,6 +45,12 @@ class Omeka_Captcha {
         return $captcha;
     }
 
+      public function testConstructorShouldAllowSettingLangOptionOnServiceObject()
+{
+$options = array('lang'=>'fr');
+$captcha = new ReCaptcha($options);
+$this->assertEquals('fr', $captcha->getService()->getOption('lang'));
+}
     /**
      * Return whether the captcha is configured.
      * If this returns true, getCaptcha will not return null.
