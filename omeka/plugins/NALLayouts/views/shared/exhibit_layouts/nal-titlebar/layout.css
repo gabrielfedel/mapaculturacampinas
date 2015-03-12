@@ -1,0 +1,81 @@
+.layout-nal-titlebar .gallery-item-title {
+    font-variant: small-caps;
+    color:#036;
+    font-size: 18px;
+    line-height: 18px;
+}
+
+.layout-nal-titlebar .exhibit-gallery-item img {
+    max-width:100px;
+    max-height:100px;
+}
+
+.layout-nal-titlebar .download-file {
+    vertical-align: bottom;
+    display: block;
+    float: left;
+    width: 100px;
+    margin-top: 10px;
+    margin-left: 5px;
+    box-shadow:none;
+    border: 5px solid #036;
+}
+
+.layout-nal-titlebar .exhibit-item-caption {
+    font-size: 0.8em;
+    margin-bottom: 1.2em !important;
+    width:85%;
+    float: right;
+    background-color: #fff;
+    margin-top: 10px;
+    min-height: 100px;
+    margin-right: 8px;
+    padding: 10px;
+}
+
+
+.layout-nal-titlebar .exhibit-item-caption h3 {
+    font-variant:small-caps;
+    margin-top:0px;
+}
+
+.layout-nal-titlebar .exhibit-item-date {
+    font-variant:none;
+    font-size:16px;
+}
+
+.layout-nal-titlebar .exhibit-item {
+    display: inline-block;
+    vertical-align: top;
+    margin-bottom: 1.25%;
+    min-height: 120px;
+    background-color: #F7F7ED;
+    width: 100%;
+    margin-right: 5px;
+}
+
+p {
+    font: 14px/18px "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 18px;
+    font-size-adjust: none;
+    font-stretch: normal;
+    -x-system-font: none;
+    -moz-font-feature-settings: normal;
+    -moz-font-language-override: normal;
+}
+
+.layout-nal-titlebar .gallery .exhibit-item:nth-of-type(4n) .download-file {
+   float:right;
+   margin-right:5px;
+}
+
+.layout-nal-titlebar .gallery .exhibit-item:nth-of-type(4n) .exhibit-item-caption {
+   float:left;
+   margin-right:0px;
+   margin-left:10px;
+}
