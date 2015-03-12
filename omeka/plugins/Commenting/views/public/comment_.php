@@ -47,5 +47,5 @@
 <p>&nbsp;</p>
 <?php endif; ?>
 <br/>
-<span class='data' style="margin-right:2.5%"><h5 style="color:#353F4F;"><strong><?php echo __("Reply"); ?></strong></h5></span>
+<span class='data' style="margin-right:2.5%"><h5 class='comment-reply'><strong><?php echo __("Reply"); ?></strong></h5></span>
 <p>&nbsp;</p>

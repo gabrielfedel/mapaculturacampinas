@@ -27,7 +27,7 @@
                 case 11: $mes = "Novembro"; break;
                 case 12: $mes = "Dezembro"; break;
             }
-                $authorText = "<div><p>&nbsp;</p><h5><strong>{$comment->author_name}&nbsp;</strong><span> disse:</h5></span><span class='data' style='float:right'><strong><h5>".date('H:i', strtotime($comment->added))." - ".date('d', strtotime($comment->added))." de ".$mes." de ".date('Y', strtotime($comment->added))."</strong></h5><p>&nbsp;</p></div>";
+                $authorText = "<p>&nbsp;</p><h5><strong>{$comment->author_name}</strong><span> disse:</span><span class='data'><strong>".date('H:i', strtotime($comment->added))." - ".date('d', strtotime($comment->added))." de ".$mes." de ".date('Y', strtotime($comment->added))."</strong></h5><p>&nbsp;</p>";
             }
         } else {
             $authorText = __("Anonymous");
@@ -46,6 +46,5 @@
 <p class='comment-unflag' <?php if(!$comment->flagged): ?>style='display:none;'<?php endif;?> ><?php echo __("Unflag inappropriate"); ?></p>
 <p>&nbsp;</p>
 <?php endif; ?>
-<br/>
-<span class='data' style="margin-right:2.5%"><h5 style="color:#353F4F;"><strong><?php echo __("Reply"); ?></strong></h5></span>
+<p class='comment-reply'><?php echo __("Reply"); ?></p>
 <p>&nbsp;</p>
