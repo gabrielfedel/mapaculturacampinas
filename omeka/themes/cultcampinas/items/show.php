@@ -1,5 +1,9 @@
     <?php 
         echo head(array('title' => metadata('item', array('Dublin Core', 'Title')), 'bodyclass' => 'items show'));
+        /*Procurar a palavra exhibits*/
+         $endereco = $_SERVER ['REQUEST_URI'];
+         $value='exhibits';
+         $pos = strpos($endereco, $value);
     ?>
     <div class="row" role="slider">
         <!-- TITLE -->
@@ -90,11 +94,17 @@
                 <div class="col-md-7 col-md-offset-1">
                     <div class="row">
                         <!--Texto conteúdo do item--> 
-                        <div class="col-md-12 textcontent">
-                            
-                            <?php //echo all_element_texts('item'); 
-                                  
-                            ?>
+                        <div class="col-md-10 textcontent">
+                            <?php if($pos !== false){?>
+                            <div id="exhibits-breadcrumb">
+                                <a href="<?php echo html_escape(url('exhibits')); ?>"><?php echo __('Exhibits'); ?></a> &gt;
+                                <a href="<?php echo html_escape(url('exhibits/show/' . $exhibit['slug']));?>"><?php echo html_escape($exhibit['title']); ?></a>
+                                <a href="<?php echo html_escape(url('exhibits/show/' . $exhibit['slug'].'/'));?>"><?php echo html_escape($exhibit['Page Slug']); ?></a>
+                                
+                                <p>&nbsp;</p>
+                            </div>
+                            <?php  } ?>
+                            <?php //echo all_element_texts('item');  ?>
                             <?php echo metadata('item', array('Dublin Core', 'Description')); ?>
                             
 
@@ -136,7 +146,7 @@
                             <?php //fire_plugin_hook('public_items_show', array('view' => $this, 'item' => $item)); ?>
                         </div>
                             <!--Comentário--> 
-                            <div id="comentario" class="col-md-8 textcontent">
+                            <div id="comentario" class="col-md-10 textcontent">
                             <?php 
                                     //Chamando o comentario
                                     CommentingPlugin::showComments();
@@ -165,12 +175,21 @@
                         <!--Redes -->
                         <div class="col-md-12 textcontent" id="redes">
                              <div class="pw-widget pw-counter-vertical">         
-                                <a class="pw-button-facebook pw-look-native"></a>           
+                               <!-- <a class="pw-button-facebook pw-look-native"></a>           
                                 <a class="pw-button-twitter pw-look-native"></a>            
                                 <a class="pw-button-linkedin pw-look-native"></a>           
-                                <a class="pw-button-post-share"></a>        
+                                <a class="pw-button-post-share"></a>  -->
+                                
+                                <?php echo '<div>';
+                                        $item = get_current_record('item');
+                                        $url = record_url($item, 'show', true);
+                                        $title = strip_formatting(metadata($item, array('Dublin Core', 'Title')));
+                                        $description = strip_formatting(metadata($item, array('Dublin Core', 'Description')));
+                                        echo social_bookmarking_toolbar($url, $title, $description);
+                                        echo '</div>'; 
+                                ?>
                             </div>
-                            <script src="http://i.po.st/static/v3/post-widget.js#publisherKey=sqmvcek1s4kcf8d21388&retina=true" type="text/javascript"></script>
+                            <!--<script src="http://i.po.st/static/v3/post-widget.js#publisherKey=sqmvcek1s4kcf8d21388&retina=true" type="text/javascript"></script>-->
                         </div>
                         <!--/Redes -->
                 </div>

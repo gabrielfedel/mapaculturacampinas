@@ -1,3 +1,18 @@
+<?php
+
+/**
+ * @package     omeka
+ * @subpackage  neatline
+ * @copyright   2014 Rector and Board of Visitors, University of Virginia
+ * @license     http://www.apache.org/licenses/LICENSE-2.0.html
+ */
+
+?>
+
+<?php //echo head(array(
+  //'title' => nl_getExhibitField('title'),
+  //'bodyclass' => 'neatline show'
+//)); ?>
 <!DOCTYPE html>
 <html lang="<?php echo get_html_lang(); ?>">
 <head>
@@ -60,6 +75,13 @@
     })();
 
     </script>
+    <style type="text/css">
+    #OpenLayers_Control_MaximizeDiv_innerImage{
+        width: 18px;
+        height: 18px;
+
+    }
+    </style>
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -70,50 +92,10 @@
 <!-- CABEÇALHO -->
 <div class="container-fluid">
     <header class="row">
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="row" style="background-color: #E45F56">
-                <div id="rede" class="col-md-5 col-sm-5 hidden-xs col-md-offset-1 col-sm-offset-1">
-                    <ul class="nav nav-pills" role="social-icons">
-                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                        <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                        <!--<li><a href="#"><i class="fa fa-youtube"></i></a></li>-->
-                        <!--<li><a href="#"><i class="fa fa-instagram"></i></a></li>-->
-                        <li><a href="http://mapa.revoada.net.br/contact"><i class="fa fa-envelope"></i></a></li>
-                    </ul>
-                </div>
-                <div class="col-md-5 col-sm-5 hidden-xs col-md-offset-1 col-sm-offset-1">
-                    <div class="navbar-form navbar-right" role="form">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <?php echo search_form(array( 'show_advanced' => false )); ?>
-                                <span class="busca_avancada"><?php echo link_to_item_search('+ Busca Avançada'); ?></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Topo para celulares -->
-                <div id="rede" class="hidden-md hidden-sm hidden-lg col-xs-6">
-                    <ul class="nav nav-pills" role="social-icons">
-                        <li><a href="#"><i class="fa fa-facebook" style="font-size:16px;"></i></a></li>
-                        <li><a href="#"><i class="fa fa-twitter" style="font-size:16px;"></i></a></li>
-                        <!--<li><a href="#"><i class="fa fa-youtube"></i></a></li>-->
-                        <!--<li><a href="#"><i class="fa fa-instagram"></i></a></li>-->
-                        <li><a href="http://mapa.revoada.net.br/contact"><i class="fa fa-envelope" style="font-size:16px;"></i></a></li>
-                    </ul>
-                </div>
-                <div class="col-xs-6 hidden-md hidden-sm hidden-lg">
-                    <?php echo search_form(array()); ?>
-                    <span class="busca_avancada"><?php echo link_to_item_search('+ Busca Avançada'); ?></span>     
-                </div>
-
-            </div>
             <!-- Menu topo -->
             <div class="row" style="background-color: #4AAAA5;display: flex; align-items: flex-end">
-                <div id="logo" class="col-md-5 col-sm-12 hidden-xs col-md-offset-1 col-sm-offset-1">
-                        <?php echo link_to_home_page('View Public Site', array('id'=>'public-link','class'=>'img-responsive')); ?><!--<img src="<?php echo img('logo.png'); ?>" /></a>-->
-                </div>
-                 <div id="logo_xs" class="hidden-md hidden-lg hidden-sm col-xs-12">
-                        <?php echo link_to_home_page('View Public Site', array('id'=>'public-link2')); ?>
+                <div id="logo1" class="col-md-5 col-sm-12 col-xs-12 col-md-offset-1 col-sm-offset-1">
+                        <?php echo link_to_home_page('View Public Site', array('id'=>'public-link1','class'=>'img-responsive')); ?><!--<img src="<?php echo img('logo.png'); ?>" /></a>-->
                 </div>
                 <div class="col-md-11 col-sm-offset-1 hidden-xs hidden-sm">
                     <div id="nav" class="nav nav-pills" role="menu">
@@ -136,7 +118,7 @@
             <!--Menu topo xs -->
             <div class="row hidden-lg hidden-md hidden-sm" style="background-color: #283744;">
                 <div class="col-xs-12" style="padding:0;">
-                    <nav id="minimenu"class="clearfix">
+                    <nav id="minimenu"class="clearfix" style="margin-left:1em;">
                         <?php echo public_nav_main(); ?>
                         <a href="#" id="pull">&nbsp;&nbsp;&nbsp;</a>
                     </nav>
@@ -148,4 +130,18 @@
 </div>
 <!-- /CABEÇALHO -->      
 <div class="container-fluid">
-    <?php fire_plugin_hook('public_content_top', array('view'=>$this)); ?>
+    <div class="row item_map">
+    <?php //fire_plugin_hook('public_content_top', array('view'=>$this)); ?>
+
+    <!-- Exhibit title: -->
+    <h3><?php echo nl_getExhibitField('title'); ?></h3>
+
+    <!-- "View Fullscreen" link: -->
+    <?php echo nl_getExhibitLink(
+     null, 'fullscreen', __('Veja em Fullscreen'), array('class' => 'nl-fullscreen')
+    ); ?>
+    <!-- Exhibit and description : -->
+    <?php echo nl_getExhibitMarkup(); ?>
+    <?php echo nl_getNarrativeMarkup(); ?>
+    </div>
+<?php echo foot(); ?>

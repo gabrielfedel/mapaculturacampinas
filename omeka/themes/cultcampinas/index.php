@@ -1,6 +1,14 @@
+
 <?php echo head(array('bodyid'=>'home')); ?>
+<!-- chama o Exhibit Builder -->
+<?php if ((get_theme_option('Display Featured Exhibit') !== '0')
+        && plugin_is_active('ExhibitBuilder')
+        && function_exists('exhibit_builder_display_random_featured_exhibit')): ?>
+<!-- Featured Exhibit -->
+<?php endif; ?>
+<!-- Fim da chamada do Exhibit Builder -->
 <!-- SLIDE -->
-<div class="row " role="slider">
+<div id="sli" class="row" role="slider">
     <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
         <!-- Indicators -->
         <ol class="carousel-indicators hidden-xs">
@@ -111,12 +119,6 @@
  <div class="content" id="info">
  <br/>
 
-<?php //Destaque
-//if (get_theme_option('Homepage Recent Items') !== '0'): ?>
-<!--<h2>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo __('Featured Item'); ?></h2>--><!-- Item em destaque -->
-<?php //echo random_featured_items(); ?>
-<?php //endif; ?>
-
 <?php
 //Adicionados recentemente
     $recentItems = get_theme_option('Homepage Recent Items');
@@ -131,7 +133,6 @@
         <?php echo recent_items($recentItems); ?>
     </div><!--end recent-items -->
     <?php endif; ?>
-    
     <?php fire_plugin_hook('public_home', array('view' => $this)); ?>
 </div>
 

@@ -1,5 +1,5 @@
 <?php echo $this->form('search-form', $options['form_attributes']); ?>
-    <div class="navbar-form navbar-right" role="form">
+    <div role="form" style=" padding-top:22px;">
         <div class="form-group">
             <div class="input-group">
                 <?php echo $this->formText('query', $filters['query'], array('type'=>'email','class'=>'form-control no-border', 'placeholder'=>'Busca')); ?>

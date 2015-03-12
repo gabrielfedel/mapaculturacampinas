@@ -3498,4 +3498,10 @@ $(function() {
 		});
 
 
+//Traduzir o reCaptcha
+
+      var RecaptchaOptions = {
+       lang : 'pt',
+       theme : 'white'
+      };
 
