@@ -110,6 +110,16 @@ if (!Omeka) {
         });
     };
 
+    Omeka.skipNav = function () {
+        $("#skipnav").click(function() {
+            $("#content").attr("tabindex", -1).focus();
+        });
+
+        $("#content").on("blur focusout", function () {
+            $(this).removeAttr("tabindex");
+        });
+    };
+
     Omeka.addReadyCallback = function (callback, params) {
         this.readyCallbacks.push([callback, params]);
     };
@@ -125,6 +135,7 @@ if (!Omeka) {
         [Omeka.deleteConfirm, null],
         [Omeka.saveScroll, null],
         [Omeka.stickyNav, null],
-        [Omeka.showAdvancedForm, null]
+        [Omeka.showAdvancedForm, null],
+        [Omeka.skipNav, null]
     ];
 })(jQuery);

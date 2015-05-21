@@ -15,7 +15,7 @@
  * @category   Zend
  * @package    Zend_Service
  * @subpackage ReCaptcha
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
@@ -34,7 +34,7 @@ require_once 'Zend/Service/ReCaptcha/Response.php';
  * @category   Zend
  * @package    Zend_Service
  * @subpackage ReCaptcha
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -102,24 +102,10 @@ class Zend_Service_ReCaptcha extends Zend_Service_Abstract
      *
      * @var array
      */
-    //protected $_options = array(
-       // 'theme'               => 'red',
-       // 'lang'                => 'en',
-        //'custom_translations' => array(),
-    //);
     protected $_options = array(
         'theme'               => 'red',
-        'lang'                => 'pt',
-        'custom_translations' => array('instructions_visual' => 'Digite o texto',
-                        'instructions_audio' => 'Digite o áudio',
-                        'play_again' => 'Ouvir Novamente',
-                        'visual_challenge' => 'Visual',
-                        'audio_challenge' => 'Audio',
-                        'refresh_btn' => 'Nova Recaptcha',
-                        'help_btn' => 'Ajuda',
-                        'incorrect_try_again' => 'Incorreto. Tente novamente.',
-
-            ),
+        'lang'                => 'en',
+        'custom_translations' => array(),
     );
 
     /**

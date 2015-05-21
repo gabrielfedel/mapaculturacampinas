@@ -220,14 +220,8 @@ function get_plugin_hook_output($name, array $args = array())
  * @param mixed $args Any arguments to be passed to the hook implementation.
  * @return string|null
  */
-function get_specific_plugin_hook_output()
+function get_specific_plugin_hook_output($pluginName, $hookName, $args = array())
 {
-    $args = func_get_args();
-
-    // Get the plugin name (1st arg) and hook name (2nd arg).
-    $pluginName = array_shift($args);
-    $hookName = array_shift($args);
-
     // Get the specific hook.
     $pluginBroker = get_plugin_broker();
     $hookNameSpecific = $pluginBroker->getHook($pluginName, $hookName);
@@ -240,7 +234,7 @@ function get_specific_plugin_hook_output()
     // Buffer and return any output originating from the hook.
     ob_start();
     foreach ($hookNameSpecific as $cb) {
-        call_user_func_array($cb, $args);
+        call_user_func($cb, $args);
     }
     $content = ob_get_contents();
     ob_end_clean();
@@ -1132,9 +1126,9 @@ function head_js($includeDefaults = true)
         $dir = 'javascripts';
         $headScript->prependScript('jQuery.noConflict();')
                    ->prependScript('window.jQuery.ui || document.write(' . js_escape(js_tag('vendor/jquery-ui')) . ')')
-                   ->prependFile('//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js')
+                   ->prependFile('//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js')
                    ->prependScript('window.jQuery || document.write(' . js_escape(js_tag('vendor/jquery')) . ')')
-                   ->prependFile('//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js');
+                   ->prependFile('//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js');
     }
     return $headScript;
 }
@@ -1440,10 +1434,9 @@ function get_recent_files($num = 10)
  * @package Omeka\Function\View
  * @param array|string $attributes Attributes for the tag.  If this is a string,
  * it will assign both 'name' and 'id' attributes that value for the tag.
- * @param string $value
  * @return string
  */
-function tag_attributes($attributes, $value=null)
+function tag_attributes($attributes)
 {
     if (is_string($attributes)) {
         $toProcess['name'] = $attributes;
@@ -1944,11 +1937,11 @@ function browse_sort_links($links, $wrapperTags = array())
                     $urlParams[$sortDirParam] = 'd';
                 }
             }
-            $url = url(array(), null, $urlParams);
+            $url = html_escape(url(array(), null, $urlParams));
             if ($sortlistWrappers['link_tag'] !== '') {
                 $sortlist .= "<{$sortlistWrappers['link_tag']} $class $linkAttr><a href=\"$url\">$label</a></{$sortlistWrappers['link_tag']}>";
             } else {
-                $sortlist .= "<a href=\"$url\" $class {$sortlistWrappers['link_attr']}\">$label</a>";
+                $sortlist .= "<a href=\"$url\" $class $linkAttr>$label</a>";
             }
         } else {
             $sortlist .= "<{$sortlistWrappers['link_tag']}>$label</{$sortlistWrappers['link_tag']}>";
@@ -2097,9 +2090,8 @@ function record_image($record, $imageType, $props = array())
         throw new InvalidArgumentException('An Omeka record must be passed to record_image.');
     }
 
-    $imageFile = $record->getFile();
     $fileMarkup = new Omeka_View_Helper_FileMarkup;
-    return $fileMarkup->image_tag($imageFile, $props, $imageType);
+    return $fileMarkup->image_tag($record, $props, $imageType);
 }
 
 /**
@@ -3105,7 +3097,7 @@ function tag_string($recordOrTags = null, $link = 'items/browse', $delimiter = n
         if (!$link) {
             $tagStrings[] = html_escape($name);
         } else {
-            $tagStrings[] = '<a href="' . html_escape(url($link, array('tag' => $name))) . '" rel="tag">' . html_escape($name) . '</a>';
+            $tagStrings[] = '<a href="' . html_escape(url($link, array('tags' => $name))) . '" rel="tag">' . html_escape($name) . '</a>';
         }
     }
     return join(html_escape($delimiter), $tagStrings);

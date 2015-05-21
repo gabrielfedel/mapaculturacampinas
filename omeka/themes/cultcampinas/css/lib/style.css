@@ -297,7 +297,13 @@ opacity: 0; /*esta para os demais browsers*/
 }
 .rodape a{
   color: #fff;
+}
 
+.rodape a:hover {
+     text-decoration: underline ;
+}
+.rodape span {
+     color: #fff;
 }
 /*Close Footer */
 
@@ -822,7 +828,7 @@ select {
  
 /*Neatline*/
 #neatline-narrative {
-    height: 73%;
+    height: 76%;
 }
 /*
 #neatline {

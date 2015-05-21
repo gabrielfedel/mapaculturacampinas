@@ -15,12 +15,17 @@
  */
 abstract class Omeka_Controller_AbstractActionController extends Zend_Controller_Action
 {
+    const RECORDS_PER_PAGE_SETTING = 'records_per_page_setting';
+
     /**
      * The number of records to browse per page.
      * 
      * If this is left null, then results will not paginate. This is partially 
      * because not every controller will want to paginate records and also to 
      * avoid BC breaks for plugins.
+     *
+     * Setting this to self::RECORDS_PER_PAGE_SETTING will cause the
+     * admin-configured page limits to be used (which is often what you want).
      *
      * @var string
      */
@@ -99,9 +104,24 @@ abstract class Omeka_Controller_AbstractActionController extends Zend_Controller
         
         // Inflect the record type from the model name.
         $pluralName = $this->view->pluralize($this->_helper->db->getDefaultModelName());
+
+        // Apply controller-provided default sort parameters
+        if (!$this->_getParam('sort_field')) {
+            $defaultSort = apply_filters("{$pluralName}_browse_default_sort",
+                $this->_getBrowseDefaultSort(),
+                array('params' => $this->getAllParams())
+            );
+            if (is_array($defaultSort) && isset($defaultSort[0])) {
+                $this->setParam('sort_field', $defaultSort[0]);
+
+                if (isset($defaultSort[1])) {
+                    $this->setParam('sort_dir', $defaultSort[1]);
+                }
+            }
+        }
         
         $params = $this->getAllParams();
-        $recordsPerPage = $this->_getBrowseRecordsPerPage();
+        $recordsPerPage = $this->_getBrowseRecordsPerPage($pluralName);
         $currentPage = $this->getParam('page', 1);
         
         // Get the records filtered to Omeka_Db_Table::applySearchFilters().
@@ -284,14 +304,61 @@ abstract class Omeka_Controller_AbstractActionController extends Zend_Controller
     /**
      * Return the number of records to display per page.
      *
-     * By default this will return null, disabling pagination. This can be 
-     * overridden in subclasses by redefining this method.
+     * By default this will read from the _browseRecordsPerPage property, which
+     * in turn defaults to null, disabling pagination. This can be 
+     * overridden in subclasses by redefining the property or this method.
      *
+     * Setting the property to self::RECORDS_PER_PAGE_SETTING will enable
+     * pagination using the admin-configued page limits.
+     *
+     * @param string|null $pluralName
      * @return integer|null
      */
-    protected function _getBrowseRecordsPerPage()
+    protected function _getBrowseRecordsPerPage($pluralName = null)
     {
-        return $this->_browseRecordsPerPage;
+        $perPage = $this->_browseRecordsPerPage;
+
+        // Use the user-configured page
+        if ($perPage === self::RECORDS_PER_PAGE_SETTING) {
+            $options = $this->getFrontController()->getParam('bootstrap')
+                ->getResource('Options');
+
+            if (is_admin_theme()) {
+                $perPage = (int) $options['per_page_admin'];
+            } else {
+                $perPage = (int) $options['per_page_public'];
+            }
+        }
+
+        // If users are allowed to modify the # of items displayed per page,
+        // then they can pass the 'per_page' query parameter to change that.
+        if ($this->_helper->acl->isAllowed('modifyPerPage')
+            && ($queryPerPage = $this->getRequest()->get('per_page'))
+        ) {
+            $perPage = (int) $queryPerPage;
+        }
+
+        // Any integer zero or below disables pagination.
+        if ($perPage < 1) {
+            $perPage = null;
+        }
+
+        if ($pluralName) {
+            $perPage = apply_filters("{$pluralName}_browse_per_page", $perPage,
+                array('controller' => $this));
+        }
+        return $perPage;
+    }
+
+    /**
+     * Return the default sorting parameters to use when none are specified.
+     *
+     * @return array|null Array of parameters, with the first element being the
+     *  sort_field parameter, and the second (optionally) the sort_dir.
+     */
+    protected function _getBrowseDefaultSort()
+    {
+        return null;
     }
 
     /**

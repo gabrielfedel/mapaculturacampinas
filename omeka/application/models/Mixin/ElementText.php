@@ -96,7 +96,8 @@ class Mixin_ElementText extends Omeka_Record_Mixin_AbstractMixin
         if ($titles) {
             $this->_record->setSearchTextTitle($titles[0]->text);
         }
-        foreach ($this->getAllElementTexts() as $elementText) {
+        $elementTexts = apply_filters('search_element_texts', $this->getAllElementTexts());
+        foreach ($elementTexts as $elementText) {
             $this->_record->addSearchText($elementText->text);
         }
     }
@@ -226,6 +227,20 @@ class Mixin_ElementText extends Omeka_Record_Mixin_AbstractMixin
         }
 
         return $this->_textsByNaturalOrder;
+    }
+
+    /**
+     * Retrieve all of the record's ElementTexts, indexed by element ID.
+     *
+     * @return array Set of ElementText records, indexed by element_id.
+     */
+    public function getAllElementTextsByElement()
+    {
+        if (!$this->_recordsAreLoaded) {
+            $this->loadElementsAndTexts();
+        }
+
+        return $this->_textsByElementId();
     }
     
     /**
@@ -511,7 +526,9 @@ class Mixin_ElementText extends Omeka_Record_Mixin_AbstractMixin
                     continue;
                 }
                 
-                $isHtml = (int) (boolean) $textAttributes['html'];
+                $isHtml = isset($textAttributes['html'])
+                        ? (int) (boolean) $textAttributes['html']
+                        : 0;
                 $this->addTextForElement($element, $elementText, $isHtml);
             }
         }

@@ -4,8 +4,12 @@
         <footer>
             <div class="row">
                 <!--<div class="col-md-12 rodape"><p><?php echo __('Copyright &copy; ') . date('Y') . ' ' . link_to_home_page() . ', Todos os direitos reservados.'; ?></p></div>-->
-                <div class="col-md-12 rodape"><p><?php echo __('A não ser que indicado ao contrário todo o
-conteúdo é <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a> ')?></p></div>
+  <div class="col-md-12 rodape"><p><?php echo __('<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+<img alt=“Licença Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a>
+<br><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">A não ser que indicado contrariamente,
+todo o conteúdo disponível no CultCampinas</span>
+está disponível com uma licença <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+Creative Commons Atribuição-Compartilhamento Igual 4.0 Internacional</a>')?></p></div>
             </div>
         </footer>
     </div>
