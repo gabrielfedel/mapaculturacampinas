@@ -1,15 +1,12 @@
 
-/* vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2 cc=80; */
-
 /**
  * @package     neatline
  * @subpackage  text
- * @copyright   2012 Rector and Board of Visitors, University of Virginia
+ * @copyright   2014 Rector and Board of Visitors, University of Virginia
  * @license     http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
 Neatline.module('Text', function(Text) {
-
 
   Text.View = Backbone.View.extend({
 
@@ -20,6 +17,7 @@ Neatline.module('Text', function(Text) {
       'mouseenter [data-neatline-slug]':  'publishHighlight',
       'mouseleave [data-neatline-slug]':  'publishUnhighlight',
       'click [data-neatline-slug]':       'publishSelect',
+      'touchstart [data-neatline-slug]':  'publishSelect',
       'click':                            'publishUnselect'
     },
 
@@ -28,22 +26,15 @@ Neatline.module('Text', function(Text) {
       padding: 200
     },
 
-
     /**
      * Initialize state, bootstrap the collection.
      *
      * @param {Object} options
      */
     initialize: function(options) {
-
-      this.slug = options.slug;
-      this.model = null;
-
-      // Mount the bootstrapped collection of models.
-      this.records = new Neatline.Shared.Record.Collection(
-        Neatline.g.text.records
-      );
-
+      this.slug     = options.slug;
+      this.records  = options.records;
+      this.model    = null;
     },
 
 

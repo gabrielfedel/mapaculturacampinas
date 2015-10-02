@@ -1,0 +1,11 @@
+#add-type {
+    float: right;
+}
+
+span.prompt {
+	padding-left: 10px;
+}
+
+input.prompt {
+	width: 130px;
+}

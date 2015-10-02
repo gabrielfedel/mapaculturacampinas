@@ -1,10 +1,8 @@
 
-/* vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2 cc=80; */
-
 /**
  * @package     neatline
  * @subpackage  text
- * @copyright   2012 Rector and Board of Visitors, University of Virginia
+ * @copyright   2014 Rector and Board of Visitors, University of Virginia
  * @license     http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
@@ -20,3 +18,35 @@
   &.selected
     background #0080bb
     color white
+
+// Shared layout styles for NeatlineText
+
+body.neatline.show
+body.neatline.fullscreen
+  background darken(white, 0.5%)
+
+  div#neatline-map
+    float left
+    width 65%
+
+    #neatline, #neatline-map
+      height 100%
+      width 100%
+
+  div#neatline-narrative
+    float right
+    padding 2em 3em
+    width 35%
+    overflow-y scroll
+
+// Layout styles specific to show action
+
+body.neatline.show
+  div#neatline-narrative
+    height 800px
+
+// Layout styles specific to fullscreen
+
+body.neatline.fullscreen
+  div#neatline-narrative
+    height 100vh

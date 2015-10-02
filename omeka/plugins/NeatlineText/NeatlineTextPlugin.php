@@ -1,11 +1,9 @@
 <?php
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 cc=80; */
-
 /**
  * @package     neatline
  * @subpackage  text
- * @copyright   2012 Rector and Board of Visitors, University of Virginia
+ * @copyright   2014 Rector and Board of Visitors, University of Virginia
  * @license     http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
@@ -18,12 +16,12 @@ class NeatlineTextPlugin extends Omeka_Plugin_AbstractPlugin
 
 
     protected $_hooks = array(
-        'neatline_public_static'
+        'neatline_public_static',
+        'neatline_public_templates'
     );
 
 
     protected $_filters = array(
-        'neatline_query_records',
         'neatline_exhibit_widgets',
         'neatline_globals'
     );
@@ -37,29 +35,24 @@ class NeatlineTextPlugin extends Omeka_Plugin_AbstractPlugin
     public function hookNeatlinePublicStatic($args)
     {
         if ($args['exhibit']->hasWidget(self::ID)) {
-            queue_css_file('payloads/text-public');
-            queue_js_file('payloads/text-public');
+            queue_css_file('dist/text-public');
+            queue_js_file('dist/text-public');
         }
     }
 
-
     /**
-     * Add `hasSlug` parameter to records API.
+     * If Neatline Text is enabled and Neatline is in fullscreen, gets the narrative markup.
      *
-     * @param Omeka_Db_Select $select The original select.
-     * @param array $args Includes `params`, the API query parameters.
-     * @return Omeka_Db_Select The modified select.
+     * @param array $args Array of arguments, with `exhibit`.
      */
-    public function filterNeatlineQueryRecords($select, $args)
+    public function hookNeatlinePublicTemplates($args)
     {
-
-        // Filter out records without slugs.
-        if (isset($args['params']['hasSlug'])) {
-            $select->where('slug IS NOT NULL');
+        if ($args['exhibit']->hasWidget(self::ID)) {
+            $action = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
+            if ($action == "fullscreen" ) {
+                echo nl_getNarrativeMarkup();
+            }
         }
-
-        return $select;
-
     }
 
 
@@ -85,11 +78,17 @@ class NeatlineTextPlugin extends Omeka_Plugin_AbstractPlugin
     public function filterNeatlineGlobals($globals, $args)
     {
 
-        if ($args['exhibit']->hasWidget(self::ID)) {
+        $exhibit = $args['exhibit'];
 
-            // Query for narrative models.
+        // Bootstrap records if the widget is activated for the exhibit and
+        // spatial querying is enabled (if not, we can just use the colleciton
+        // loaded by the map, which will include all records).
+
+        if ($exhibit->hasWidget(self::ID) && $exhibit->spatial_querying) {
+
+            // Query for records with slugs.
             $result = $this->_db->getTable('NeatlineRecord')->queryRecords(
-                array('exhibit_id' => $args['exhibit']->id, 'hasSlug' => true)
+                array('exhibit_id' => $exhibit->id, 'hasSlug' => true)
             );
 
             // Push collection onto `Neatline.g`.
