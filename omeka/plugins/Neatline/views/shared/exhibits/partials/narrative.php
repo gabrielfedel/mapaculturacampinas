@@ -10,5 +10,7 @@
 ?>
 
 <div id="neatline-narrative">
-  <?php echo nl_getExhibitField('narrative'); ?>
+  <?php 
+echo nl_getExhibitField('narrative'); 
+?>
 </div>
